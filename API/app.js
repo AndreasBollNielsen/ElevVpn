@@ -1,5 +1,6 @@
 const express = require('express');
 const apiRouter = require('./Routes/RouteManager');
+const apiEmail = require('./Routes/EmailManager');
 const app = express();
 const cors = require('cors');
 const port = 3600;
@@ -8,6 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cors());
 app.use('/api',apiRouter);
+app.use('/api/email',apiEmail);
 
 // const mail ="testmail@zbc.dk";
 // const Vpn = false;

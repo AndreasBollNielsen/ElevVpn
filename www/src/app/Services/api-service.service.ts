@@ -22,6 +22,10 @@ export class ApiServiceService {
     return this.http.post<any>('http://localhost:3600/api/AddUsers', data);
   }
 
+  SendEmail(data: string) {
+    return this.http.post<any>('http://localhost:3600/api/email/AddUsers', data);
+  }
+
   CheckAdminLogin(data: any) {
 
     const d = JSON.stringify(data);
