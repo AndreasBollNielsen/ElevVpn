@@ -1,0 +1,24 @@
+<div class="row container-fluid">
+
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <div class="row align-items-center input-col  g-3">
+            <div class="col text-center">
+                <div class="p-1">
+                    <label>Indtast mail adresser som skal whitelistes:</label>
+                </div>
+                
+                <div class="p-1">
+                    <textarea #datainput rows="15" cols="45"></textarea>
+                </div>
+                <div class="p-1">
+   
+                    <button (click)="AddEmails(datainput.value)" class="btn btn-dark ">Tilføj til whitelist</button>
+                    <!-- <button (click)="getusers()" class="btn btn-dark ">Testt</button> -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4"></div>
+</div>
