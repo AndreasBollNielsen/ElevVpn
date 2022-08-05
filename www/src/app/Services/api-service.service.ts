@@ -12,6 +12,7 @@ export class ApiServiceService {
 
   adminuser: any = { userName: 'admin', password: 'admin' };
   tempList: User[] = [];
+
   constructor(private http: HttpClient) { }
 
   GetUserData() {
@@ -22,8 +23,18 @@ export class ApiServiceService {
     return this.http.post<any>('http://localhost:3600/api/AddUsers', data);
   }
 
-  SendEmail(data: string) {
-    return this.http.post<any>('http://localhost:3600/api/email/AddUsers', data);
+  SendEmail(data: any) {
+    
+    // return this.http.post<any>('http://localhost:3600/api/email/SendMail', data).subscribe({
+    //   next: data => {
+    //     console.log(data);
+    //   },
+    //   error: error =>{console.log("error: ",error);}
+    // }
+     
+      
+    // );
+    return this.http.post<any>('http://localhost:3600/api/email/SendMail', data).subscribe();
   }
 
   CheckAdminLogin(data: any) {
@@ -61,11 +72,8 @@ export class ApiServiceService {
   }
 
   UpdateSticky(user: User) {
-    const data = [{ id: user.id, sticky: user.sticky }];
-    console.log(data);
-    this.http.post<any>('http://localhost:3600/api/UpdateSticky/?id=1&sticky=true',['test','test2']).subscribe(newdata =>{
-      console.log(newdata);
-    })
+    const data = { id: user.id, sticky: user.sticky };
+    this.http.post<any>('http://localhost:3600/api/UpdateSticky', data).subscribe();
   }
 
 }

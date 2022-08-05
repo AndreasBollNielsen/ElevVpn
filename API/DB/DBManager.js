@@ -54,7 +54,7 @@ db.AddUserEmail = (email) => {
                     console.log("query not working");
                     return reject(err);
                 }
-
+console.log("add users: ",results);
                 return resolve(results[0]);
             });
         }

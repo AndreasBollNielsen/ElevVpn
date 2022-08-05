@@ -3,33 +3,48 @@ const express = require("express");
 const mailer = require("nodemailer");
 const smtp = require("nodemailer-smtp-transport");
 const router = express.Router();
+const config = require('../config');
 
 
 const transporter = mailer.createTransport(smtp({
-  host: 'localhost',
+  host: 'Smtp.efif.dk',
   port: 587,
-  tls: {rejectUnauthorized: false}
+ auth: {
+  user: config.email,
+  pass: config.pass
+ },
+ tls: {
+  rejectUnauthorized: false
+}
 }));
 
 let mailOptions = {
-  from: "vpn", // sender address
+  from: "andr687w@zbc.dk", // sender address
   to: "andr687w@zbc.dk", // list of receivers
-  subject: "subject", // Subject line
-  text: "test", // plain text body
+  subject: "Ny VPN adgang", // Subject line
+  text: "det her er en test for at se om email systemet virker", // plain text body
   html: "", // html body
 };
 
 router.post("/SendMail", async (req, res) => {
+  
+  let data = req.body
+  console.log(data.email);
+  if(data == null)
+  {
+    return;
+  }
+  mailOptions.to = data.email;
   try {
-    res.sendStatus(200);
-
+    
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         return console.log(error);
       } else {
         console.log("Message sent: " + info.response);
+        res.status(200).send({ status: 'OK'});
       }
-      done();
+      
     });
   } catch (error) {
     console.log(error);
