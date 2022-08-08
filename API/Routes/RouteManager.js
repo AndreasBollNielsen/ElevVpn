@@ -8,7 +8,7 @@ router.get('/Getusers', async (req, res, next) => {
     try {
 
         let results = await db.getUsers();
-        console.log( results);
+        console.log(results);
         res.json(results);
 
     } catch (error) {
@@ -22,26 +22,19 @@ router.post('/AddUsers', async (req, res) => {
 
 
     try {
-        const data = req.body[0];
-        console.log(data);
+        const data = req.body;
+         console.log(data);
+        var results = [];
+        Object.keys(data).forEach(async x => {
 
-        Object.keys(data).forEach(x =>{
-           // console.log('Key : ' + x + ', Value : ' + data[x]);
-           let element = data[x];
-           console.log(element);
-            let result =  db.AddUserEmail(data[x]);
-            res.json(result);
+            const result = await db.AddUserEmail(data[x]);
+            results.push(result);
+            console.log(results[results.length - 1]);
         })
 
-        // for (let index = 0; index < data.length; index++) {
-        //     const el = data[index];
-        //     console.log("element: ",el);
-        //     let result = await db.AddUserEmail(el);
-        //    // res.json(result);
-
-        // }
 
 
+        res.json(results);
         res.status(200);
 
     } catch (error) {
@@ -56,9 +49,27 @@ router.post('/UpdateSticky', async (req, res) => {
     try {
         const data = req.body;
         console.log(data);
-        
-       
-        let result = await db.UpdateSticky(data.id,data.sticky);
+
+
+        let result = await db.UpdateSticky(data.id, data.sticky);
+        res.json(result);
+        res.status(200);
+
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+router.post('/RemoveUser', async (req, res) => {
+
+    console.log("reached endpoint");
+    try {
+        const data = req.body;
+        console.log(data);
+
+
+        let result = await db.DeleteUser(data.id);
         res.json(result);
         res.status(200);
 
@@ -70,15 +81,15 @@ router.post('/UpdateSticky', async (req, res) => {
 
 router.get('/admin/:data', async (req, res) => {
 
-   const data = req.query;
-    console.log("body: ",data.userName);
-    console.log("body: ",data.password);
+    const data = req.query;
+    console.log("body: ", data.userName);
+    console.log("body: ", data.password);
     try {
 
         let results = await db.checkAdminLogin(data.userName, data.passWord);
 
         res.json(results);
-        res.status(200,results);
+        res.status(200, results);
 
     } catch (error) {
         console.log(error);

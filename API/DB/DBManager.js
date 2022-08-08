@@ -28,6 +28,7 @@ const con = mysql.createPool({
 
 let db = {};
 
+//get list of users from database
 db.getUsers = () => {
 
     return new Promise(
@@ -43,10 +44,11 @@ db.getUsers = () => {
     );
 };
 
+//add multiple emails to database
 db.AddUserEmail = (email) => {
 
     let query = 'CALL AddUser(?)';
-    console.log(email);
+    // console.log(email);
     return new Promise(
         (resolve, reject) => {
             con.query(query, email, (err, results) => {
@@ -54,14 +56,14 @@ db.AddUserEmail = (email) => {
                     console.log("query not working");
                     return reject(err);
                 }
-                console.log("add users: ", results);
-                return resolve(results[0]);
+                // console.log("add users: ", results);
+                return resolve(results);
             });
         }
     );
 };
 
-
+//check if admin credentials is valid
 db.checkAdminLogin = (username, password) => {
 
     console.log("username: ", username);
@@ -82,6 +84,7 @@ db.checkAdminLogin = (username, password) => {
     );
 };
 
+//update user sticky value
 db.UpdateSticky = (id, sticky) => {
 
     let query = 'CALL UpdateSticky(?,?)';
@@ -89,6 +92,25 @@ db.UpdateSticky = (id, sticky) => {
     return new Promise(
         (resolve, reject) => {
             con.query(query, [id, sticky], (err, results) => {
+                if (err) {
+                    console.log("query not working");
+                    return reject(err);
+                }
+                console.log(results);
+                return resolve(results[0]);
+            });
+        }
+    );
+};
+
+//Delete user from database
+db.DeleteUser = (id) => {
+
+    let query = 'CALL deleteUser(?)';
+
+    return new Promise(
+        (resolve, reject) => {
+            con.query(query, id, (err, results) => {
                 if (err) {
                     console.log("query not working");
                     return reject(err);

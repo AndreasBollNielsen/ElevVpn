@@ -5,7 +5,6 @@ const smtp = require("nodemailer-smtp-transport");
 const router = express.Router();
 const config = require('../Config.json');
 
-console.log(config);
 
 
 const transporter = mailer.createTransport(smtp({
