@@ -46,7 +46,7 @@ db.getUsers = () => {
 db.AddUserEmail = (email) => {
 
     let query = 'CALL AddUser(?)';
-
+    console.log(email);
     return new Promise(
         (resolve, reject) => {
             con.query(query, email, (err, results) => {
@@ -54,7 +54,7 @@ db.AddUserEmail = (email) => {
                     console.log("query not working");
                     return reject(err);
                 }
-console.log("add users: ",results);
+                console.log("add users: ", results);
                 return resolve(results[0]);
             });
         }
