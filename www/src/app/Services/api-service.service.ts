@@ -20,20 +20,22 @@ export class ApiServiceService {
   }
 
   AddUserEmail(data: string[]) {
-    return this.http.post<any>('http://localhost:3600/api/AddUsers', data);
+    console.log("data: ",data);
+    return this.http.post<any>('http://localhost:3600/api/AddUsers', data).subscribe();
   }
 
   SendEmail(data: any) {
-    
+
     // return this.http.post<any>('http://localhost:3600/api/email/SendMail', data).subscribe({
     //   next: data => {
     //     console.log(data);
     //   },
     //   error: error =>{console.log("error: ",error);}
     // }
-     
-      
+
+
     // );
+   
     return this.http.post<any>('http://localhost:3600/api/email/SendMail', data).subscribe();
   }
 

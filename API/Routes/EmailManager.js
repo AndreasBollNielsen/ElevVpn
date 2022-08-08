@@ -3,14 +3,16 @@ const express = require("express");
 const mailer = require("nodemailer");
 const smtp = require("nodemailer-smtp-transport");
 const router = express.Router();
-const config = require('../config');
+const config = require('../Config.json');
+
+console.log(config);
 
 
 const transporter = mailer.createTransport(smtp({
   host: 'Smtp.efif.dk',
   port: 587,
  auth: {
-  user: config.email,
+  user: config.user,
   pass: config.pass
  },
  tls: {

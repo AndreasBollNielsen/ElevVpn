@@ -22,15 +22,24 @@ router.post('/AddUsers', async (req, res) => {
 
 
     try {
-        const arr = req.body;
-        console.log(arr);
-        for (let index = 0; index < arr.length; index++) {
-            const el = arr[index];
-            console.log(el);
-            let result = await db.AddUserEmail(el);
-            res.json(result);
+        const data = req.body[0];
+        console.log(data);
 
-        }
+        Object.keys(data).forEach(x =>{
+           // console.log('Key : ' + x + ', Value : ' + data[x]);
+           let element = data[x];
+           console.log(element);
+            let result =  db.AddUserEmail(data[x]);
+            res.json(result);
+        })
+
+        // for (let index = 0; index < data.length; index++) {
+        //     const el = data[index];
+        //     console.log("element: ",el);
+        //     let result = await db.AddUserEmail(el);
+        //    // res.json(result);
+
+        // }
 
 
         res.status(200);

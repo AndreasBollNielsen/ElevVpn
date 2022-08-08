@@ -23,7 +23,9 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
 
 
-    this.LoggedIn = localStorage.getItem("admin") != null ? true:false;
+    //this.LoggedIn = localStorage.getItem("admin") != null ? true:false;
+    this.LoggedIn = this.auth.getCookie("admin") != null ? true:false;
+    
     
     
     

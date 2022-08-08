@@ -51,7 +51,7 @@ export class AdminLoginComponent implements OnInit {
 
   GetSessionData(): boolean
   {
-
-    return localStorage.getItem("admin") == null ? true:false;
+    return this.auth.getCookie("admin") == null ? true:false;
+    //return localStorage.getItem("admin") == null ? true:false;
   }
 }

@@ -22,13 +22,11 @@ export class AddmailsComponent implements OnInit {
 
   AddEmails(data: string) {
     const arr = data.split(/\r?\n/);
-    console.log('1', arr);
+   // console.log('1', arr);
   //  const resp = ;
-  this.api.AddUserEmail(arr).subscribe((response) => {
-    console.log(response);
-  })
+  this.api.AddUserEmail(arr);
     
-   console.log('finised sending: ' + JSON.stringify(arr));
+  // console.log('finised sending: ' + JSON.stringify(arr));
   }
 
 }
