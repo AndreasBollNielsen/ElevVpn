@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { InfoHandlerService } from 'src/app/Services/info-handler.service';
 
 @Component({
   selector: 'app-mail-info',
@@ -7,14 +8,45 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MailInfoComponent implements OnInit {
 
-  constructor() { }
+  infotext: string = "";
+  modifiedInfoText: string = "";
+  feedbackText:string='';
+  constructor(private infoHandler: InfoHandlerService) {
 
-  ngOnInit(): void {
+    this.infoHandler.info$.subscribe((data:string)=>{
+      next:
+      if(this.infotext != data)
+      {
+        this.infotext = data;
+        console.log(this.infotext);
+        this.feedbackText ='';
+      }
+    })
+
   }
 
-  UpdateInfo(data: string)
-  {
+  ngOnInit(): void {
 
+    this.infoHandler.GetInfo()
+  }
+
+  UpdateInfo(data: string) {
+
+    this.infoHandler.UpdateInfo(data);
+
+    this.infoHandler.CrudResponse$.subscribe((response:string)=>{
+      next:
+      this.feedbackText = response;
+    })
+  }
+
+  //reset feedback text if textarea is in focus
+  ResetFeedback()
+  {
+    if(this.feedbackText != '')
+    {
+      this.feedbackText = '';
+    }
   }
 
 }

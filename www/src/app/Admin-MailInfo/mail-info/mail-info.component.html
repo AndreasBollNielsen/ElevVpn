@@ -1,27 +1,55 @@
+<div class="row container-fluid infoBox">
+
+    <div class="col-3"></div>
+
+    <div class="col align-items-center text-center pt-5">
+
+
+
+        <div class="row">
+            <h2>Indhold følgemail:</h2>
+            <div class="p-1">
+                <textarea #datainput rows="7" [(ngModel)]='modifiedInfoText' (focus)="ResetFeedback()"></textarea>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-3"></div>
+</div>
+
 <div class="row container-fluid">
 
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
 
-    <div class="row align-items-center input-col  g-1">
-        <div class="col text-center">
-            <div class="p-1">
-                <label>Indhold Følgemail:</label>
+        <!--Header-->
+        <div class="row  pt-5 text-center">
+            <div class="col">
+
+                <h2>Eksempel</h2>
             </div>
-            
-            <div class="p-1">
-                <textarea #datainput rows="15" cols="100"></textarea>
-            </div>
-            <div class="p-1">
+        </div>
+       
+        <!--example box-->
+        <div class="row border exampleBox">
+            <div class="col-md-12">Hej &lt;VPN brugernavn&gt;</div>
+            <div class="col-md-12" *ngIf="modifiedInfoText ==''">{{infotext}}</div>
+            <div class="col-md-12">{{modifiedInfoText}}</div>
+            <div class="col-md-12">Log på med &lt;VPN brugernavn&gt; og følgende kode: &lt;autogenereret kode&gt;</div>
+        </div>
+
+        <div class="row text-center">
+            <div class="p-2">
 
                 <button (click)="UpdateInfo(datainput.value)" class="btn btn-dark ">Tilføj</button>
-                <!-- <button (click)="getusers()" class="btn btn-dark ">Testt</button> -->
+               <div class="col p-2" *ngIf="feedbackText !=''">{{feedbackText}}</div>
             </div>
-
         </div>
-    </div>
 
-    <!-- <div class="col-md-2"></div>
-    <div class="col-md-8">
-       
+
     </div>
-    <div class="col-md-2"></div> -->
+    <div class="col-md-3"></div>
+
+
 </div>

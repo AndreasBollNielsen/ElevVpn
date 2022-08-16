@@ -1,4 +1,5 @@
 const express = require('express');
+const apiInfo = require('./Routes/InfoManager');
 const apiRouter = require('./Routes/RouteManager');
 const apiEmail = require('./Routes/EmailManager');
 const app = express();
@@ -10,14 +11,8 @@ app.use(express.urlencoded({extended: true}));
 app.use(cors());
 app.use('/api',apiRouter);
 app.use('/api/email',apiEmail);
+app.use('/api/info',apiInfo);
 
-// const mail ="testmail@zbc.dk";
-// const Vpn = false;
-// const isSticky =true;
-
-// const user = {'email':mail,'vpn':Vpn,'sticky':isSticky};
-
-// const users = [user];
 
 
 //output port listener

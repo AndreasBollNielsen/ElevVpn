@@ -1,12 +1,13 @@
 const mysql = require('mysql');
 
 const con = mysql.createPool({
-    connectionLimit: 10,
-    user: 'root',
-    database: 'elevvpndb',
-    host: 'localhost',
+    connectionLimit: 100,
+    user: 'radius',
+    database: 'elevvpn',
+    host: '127.0.0.1',
     port: '3306',
-    "typeCast": function castField(field, useDefaultTypeCasting) {
+    pass: 'J@neL0veMonkey$2',
+    "typeCast": function castField(field, useDefautTypeCasting) {
 
         // We only want to cast bit fields that have a single-bit in them. If the field
         // has more than one bit, then we cannot assume it is supposed to be a Boolean.
@@ -28,6 +29,21 @@ const con = mysql.createPool({
 
 let db = {};
 
+
+
+
+
+db.testcon = function(req, res) {
+    con.getConnection(function(err, conn){
+        conn.query("select * from users", function(err, rows) {
+             res.json(err);
+             if(err)
+             {
+                res.json(err);
+             }
+        })
+    })
+}
 //get list of users from database
 db.getUsers = () => {
 
@@ -115,12 +131,53 @@ db.DeleteUser = (id) => {
                     console.log("query not working");
                     return reject(err);
                 }
-                console.log(results);
-                return resolve(results[0]);
+               // console.log("from DB: ",results);
+                return resolve(results);
             });
         }
     );
 };
+
+
+//Get Info mail from database
+db.GetInfo = () => {
+
+    let query = 'SELECT * FROM mailinfo';
+
+    return new Promise(
+        (resolve, reject) => {
+            con.query(query, (err, results) => {
+                if (err) {
+                    console.log("query not working");
+                    return reject(err);
+                }
+               // console.log("from DB: ",results);
+                return resolve(results);
+            });
+        }
+    );
+};
+
+
+//Update Info mail from database
+db.UpdateInfo = (infoText) => {
+
+    let query = 'CALL updateInfo(?)';
+console.log(infoText);
+    return new Promise(
+        (resolve, reject) => {
+            con.query(query, infoText, (err, results) => {
+                if (err) {
+                    console.log("query not working");
+                    return reject(err);
+                }
+                console.log("from DB: ",results);
+                return resolve(results);
+            });
+        }
+    );
+};
+
 
 
 module.exports = db;

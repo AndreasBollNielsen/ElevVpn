@@ -1,3 +1,8 @@
 input {
     text-align: center;
+    font-size: x-large;
+}
+
+button{
+    font-size: x-large;
 }

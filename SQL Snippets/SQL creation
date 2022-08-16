@@ -1,0 +1,23 @@
+CREATE TABLE adminuser(
+    id INT AUTO_INCREMENT,
+    userName VARCHAR(100),
+    passWord VARCHAR(100),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE mailInfo(
+    id INT AUTO_INCREMENT,
+    info VARCHAR(5000),
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE users(
+    id INT AUTO_INCREMENT,
+    email VARCHAR(5000),
+    hasVpn  BIT(1),
+    isSticky BIT(1),
+    PRIMARY KEY (id)
+);
+
+INSERT INTO adminuser(userName,passWord)
+VALUES('cfmn','Bob$piser1MisseKat');

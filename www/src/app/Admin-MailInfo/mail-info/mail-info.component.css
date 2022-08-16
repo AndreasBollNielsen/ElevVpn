@@ -1,0 +1,12 @@
+textarea{
+    resize: none;
+    width: 100%;
+    border-radius: 30px;
+    padding: 20px;
+}
+
+.exampleBox{
+    height: 200px;
+    border-radius: 30px;
+    padding: 20px;
+}

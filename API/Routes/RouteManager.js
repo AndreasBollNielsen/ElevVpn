@@ -4,10 +4,20 @@ const router = express.Router();
 const db = require('../DB/DBManager');
 const query = require('querystring');
 
+
+router.get('/test',(req,res) =>{
+    // console.log(res);
+ // let result =  db.testcon();
+ // console.log(result);
+ res.json(result);
+});
+
+
 router.get('/Getusers', async (req, res, next) => {
     try {
 
-        let results = await db.getUsers();
+     let results = await db.getUsers();
+    //    let results = 'ok';
         console.log(results);
         res.json(results);
 
@@ -23,7 +33,7 @@ router.post('/AddUsers', async (req, res) => {
 
     try {
         const data = req.body;
-         console.log(data);
+        console.log(data);
         var results = [];
         Object.keys(data).forEach(async x => {
 
@@ -61,16 +71,19 @@ router.post('/UpdateSticky', async (req, res) => {
     }
 });
 
-router.post('/RemoveUser', async (req, res) => {
+router.delete('/RemoveUser', async (req, res) => {
 
-    console.log("reached endpoint");
+    console.log("reached endpoint delete");
     try {
         const data = req.body;
-        console.log(data);
+        console.log(req.body);
 
 
         let result = await db.DeleteUser(data.id);
-        res.json(result);
+        
+        if (result.affectedRows > 0) {
+            res.status(200).send({ status: 'OK' });
+        }
         res.status(200);
 
     } catch (error) {

@@ -32,7 +32,7 @@ export class AdminAuthenticatorService {
         console.log("authenticated");
         this.authenticated = true;
       //  localStorage.setItem('admin', 'loggedIn');
-        this.setCookie("admin","loggedIn",0.01);
+        this.setCookie("admin","loggedIn",0.001);
         login = this.authenticated;
 
       }

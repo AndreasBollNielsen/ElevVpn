@@ -4,6 +4,7 @@ const mailer = require("nodemailer");
 const smtp = require("nodemailer-smtp-transport");
 const router = express.Router();
 const config = require('../Config.json');
+const db = require('../DB/RadiusDB');
 
 
 
@@ -20,15 +21,19 @@ const transporter = mailer.createTransport(smtp({
 }));
 
 let mailOptions = {
-  from: "andr687w@zbc.dk", // sender address
-  to: "andr687w@zbc.dk", // list of receivers
-  subject: "Ny VPN adgang", // Subject line
+  from: "Noreply-zbc-elev-vpn", // sender address
+  to: "", // list of receivers
+  subject: "VPN adgang", // Subject line
   text: "det her er en test for at se om email systemet virker", // plain text body
   html: "", // html body
 };
 
 router.post("/SendMail", async (req, res) => {
   
+ 
+
+console.log("login: ", config);
+
   let data = req.body
   console.log(data.email);
   if(data == null)
@@ -52,5 +57,21 @@ router.post("/SendMail", async (req, res) => {
     res.sendStatus(500);
   }
 });
+
+
+router.get('/GetRadius', async (req, res, next) => {
+  try {
+
+      let results = await db.GetFromRadius();
+      console.log(results);
+      res.json(results);
+
+  } catch (error) {
+      console.log(error);
+      res.sendStatus(500);
+  }
+});
+
+
 
 module.exports = router;

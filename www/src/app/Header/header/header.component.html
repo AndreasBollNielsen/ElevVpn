@@ -1,6 +1,6 @@
 <nav class="navbar navbar-dark bg-dark ps-2">
 
-    <ul>
+    <ul class="navbar-nav">
         <li class="nav-item">
             <a class="navbar-brand h1" routerLink="/user">ZBC Elev VPN {{ LoggedIn
                 ?'(Admin)' : ''}}</a>
@@ -9,16 +9,16 @@
     </ul>
 
 
-    <div *ngIf="LoggedIn">
-        <ul>
-            <li class="nav-item">
-                <a class="navbar-brand h1" routerLink="/admin-whitelist" routerLinkActive="active">Whitelist:</a>
-                <a class="navbar-brand h1" routerLink="/admin-mailInfo" routerLinkActive="active">Følgemail:</a>
-                <a class="navbar-brand h1" routerLink="/admin-passwordChange" routerLinkActive="active">Skift Password:</a>
-                <a class="navbar-brand h1" routerLink="/admin-addmail" routerLinkActive="active">Tilføj Mails:</a>
-            </li>
-        </ul>
-    </div>
+
+    <ul *ngIf="LoggedIn" class="navbar-nav">
+        <li class="nav-item">
+            <a class="navbar-brand h1" routerLink="/admin-whitelist" routerLinkActive="active">Whitelist:</a>
+            <a class="navbar-brand h1" routerLink="/admin-mailInfo" routerLinkActive="active">Følgemail:</a>
+            <a class="navbar-brand h1" routerLink="/admin-passwordChange" routerLinkActive="active">Skift Password:</a>
+            <a class="navbar-brand h1" routerLink="/admin-addmail" routerLinkActive="active">Tilføj Mails:</a>
+        </li>
+    </ul>
+
 
 
 

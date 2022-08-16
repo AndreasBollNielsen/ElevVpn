@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/Interfaces/user';
 import { ApiServiceService } from 'src/app/Services/api-service.service';
+import { EmailHandlerService } from 'src/app/Services/email-handler.service';
 
 @Component({
   selector: 'app-addmails',
@@ -21,12 +22,13 @@ export class AddmailsComponent implements OnInit {
   }
 
   AddEmails(data: string) {
-    const arr = data.split(/\r?\n/);
-   // console.log('1', arr);
-  //  const resp = ;
-  this.api.AddUserEmail(arr);
-    
-  // console.log('finised sending: ' + JSON.stringify(arr));
+    const emails = data.split(/\r?\n/);
+
+    console.log("sending mail from add emails component: ", emails);
+    //  const resp = ;
+    this.api.AddUserEmail(emails);
+
+    // console.log('finised sending: ' + JSON.stringify(arr));
   }
 
 }
