@@ -1,0 +1,55 @@
+DROP PROCEDURE IF EXISTS AddUser;
+DELIMITER //  
+CREATE PROCEDURE AddUser (
+    IN _email VARCHAR(100)
+)  
+BEGIN  
+    INSERT into users (email, hasVpn, isSticky)
+VALUES (_email,false,false); 
+END // 
+
+
+
+DROP PROCEDURE IF EXISTS UpdateSticky;
+DELIMITER //  
+CREATE PROCEDURE UpdateSticky (
+    IN _id INT, 
+    IN sticky tinyint
+)  
+BEGIN  
+   UPDATE users
+    SET isSticky = sticky
+    WHERE id = _id;
+END // 
+
+
+DROP PROCEDURE IF EXISTS UpdateVpn;
+DELIMITER //  
+CREATE PROCEDURE UpdateVpn (
+    IN _email varchar(128)
+)  
+BEGIN  
+    
+    IF (SELECT 1 = 1 FROM users WHERE email=_email) THEN
+    BEGIN
+        Update users 
+        SET hasVpn = 1
+        WHERE email=_email;
+    END;
+
+    END IF;
+   
+        
+    
+END //
+
+
+DROP PROCEDURE IF EXISTS delupeteUser;
+DELIMITER //  
+CREATE PROCEDURE deleteUser (
+    IN _id INT
+)  
+BEGIN  
+    DELETE FROM users
+    WHERE users.id = _id;
+END // 

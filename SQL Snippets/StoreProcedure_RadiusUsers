@@ -1,0 +1,32 @@
+DROP PROCEDURE IF EXISTS AddRadiusUser;
+DELIMITER //  
+CREATE PROCEDURE AddRadiusUser (
+    IN _userName VARCHAR(128),
+    IN _password VARCHAR(128)
+)  
+BEGIN  
+    INSERT INTO radcheck ( username, attribute, op, value) 
+    VALUES (_userName,'User-Password',':=',_password);
+END // 
+
+
+DROP PROCEDURE IF EXISTS RemoveRadiusUser;
+DELIMITER //  
+CREATE PROCEDURE RemoveRadiusUser (
+    IN _userName VARCHAR(128)
+)  
+BEGIN  
+    delete from radcheck where username = _userName;
+END // 
+
+
+DROP PROCEDURE IF EXISTS GetRadiusUser;
+DELIMITER //  
+CREATE PROCEDURE GetRadiusUser (
+    IN _userName VARCHAR(128)
+)  
+BEGIN  
+    select * from radcheck where username = _userName;
+END // 
+
+
