@@ -29,7 +29,7 @@ export class DataHandlerService {
 
   DeleteUser(user: User) {
     if (!user.sticky) {
-      this.crud.DeleteUser(user.id).subscribe(() => {
+      this.crud.DeleteUser(user).subscribe(() => {
         complete:
         console.log("reloading");
         this.loadUsers();

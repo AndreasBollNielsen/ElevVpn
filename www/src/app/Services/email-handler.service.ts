@@ -11,7 +11,9 @@ export class EmailHandlerService {
   }
 
   SendEmail(email: string) {
-    console.log("sending mail from handler: ",email);
+    console.log("sending mail from handler: ", email);
+
+    // console.log(this.crud.GetUserData());
     this.crud.SendEmail(email);
   }
 }

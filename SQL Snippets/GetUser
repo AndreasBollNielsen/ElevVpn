@@ -1,0 +1,7 @@
+DROP PROCEDURE IF EXISTS GetUsers;
+DELIMITER //  
+CREATE PROCEDURE GetUsers (
+)  
+BEGIN  
+    SELECT * FROM users;
+END // 

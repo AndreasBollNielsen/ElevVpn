@@ -1,11 +1,10 @@
-// const mysql = require('mysql');
+const mysql = require('mysql');
 
-const mariadb = require('mariadb');
-const con = mariadb.createPool({
+const con = mysql.createPool({
     host: 'localhost',
-    user: 'root',
-    password: 'OmgL00k@The$paceMonkey',
-    database:'radius',
+    user: 'radius',
+    password: 'J@neL0veMonkey$2',
+    database: 'radius',
     connectionLimit: 10
 });
 
@@ -14,21 +13,63 @@ let db = {};
 
 
 
+db.GetFromRadius = (userName) => {
 
-
-db.GetFromRadius = () => {
-
+    let query = "CALL GetRadiusUser(?)";
+console.log("username: ",userName);
     return new Promise(
         (resolve, reject) => {
-            con.query('SELECT * FROM radcheck', (err, results) => {
+            con.query(query, userName, (err, results) => {
                 if (err) {
                     console.log("query not working");
                     return reject(err);
                 }
-                return resolve(results[0]);
+                // console.log(results);
+                return resolve(results);
             });
         }
     );
 };
+
+
+db.AddUser = (username, password) => {
+
+    console.log("username: ", username);
+    console.log("password: ", password);
+    let query = "CALL AddRadiusUser(?,?)";
+
+    return new Promise(
+        (resolve, reject) => {
+            con.query(query, [username, password], (err, results) => {
+                if (err) {
+                    console.log("query not working");
+                    return reject(err);
+                }
+                console.log("DB Results: ", results);
+                return resolve(results);
+            });
+        }
+    );
+};
+
+db.RemoveUser = (username) => {
+
+    console.log("username: ", username);
+    let query = "CALL RemoveRadiusUser(?)";
+
+    return new Promise(
+        (resolve, reject) => {
+            con.query(query, username, (err, results) => {
+                if (err) {
+                    console.log("query not working");
+                    return reject(err);
+                }
+                console.log("DB Results: ", results);
+                return resolve(results);
+            });
+        }
+    );
+};
+
 
 module.exports = db;

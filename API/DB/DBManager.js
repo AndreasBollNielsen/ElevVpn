@@ -1,29 +1,14 @@
 const mysql = require('mysql');
+const config = require('../DBConfig.json');
+
 
 const con = mysql.createPool({
     connectionLimit: 100,
-    user: 'radius',
-    database: 'elevvpn',
-    host: '127.0.0.1',
-    port: '3306',
-    pass: 'J@neL0veMonkey$2',
-    "typeCast": function castField(field, useDefautTypeCasting) {
-
-        // We only want to cast bit fields that have a single-bit in them. If the field
-        // has more than one bit, then we cannot assume it is supposed to be a Boolean.
-        if ((field.type === "BIT") && (field.length === 1)) {
-
-            var bytes = field.buffer();
-
-            // A Buffer in Node represents a collection of 8-bit unsigned integers.
-            // Therefore, our single "bit field" comes back as the bits '0000 0001',
-            // which is equivalent to the number 1.
-            return (bytes[0] === 1);
-
-        }
-
-        return (useDefaultTypeCasting());
-    }
+    user: config.test.user,
+    database: config.test.database,
+    host: config.test.host,
+    port: config.test.port,
+    password: config.test.password
 
 });
 
@@ -32,19 +17,7 @@ let db = {};
 
 
 
-
-db.testcon = function(req, res) {
-    con.getConnection(function(err, conn){
-        conn.query("select * from users", function(err, rows) {
-             res.json(err);
-             if(err)
-             {
-                res.json(err);
-             }
-        })
-    })
-}
-//get list of users from database
+//get list of users from databas"e
 db.getUsers = () => {
 
     return new Promise(
@@ -119,6 +92,25 @@ db.UpdateSticky = (id, sticky) => {
     );
 };
 
+//update user VPN value
+db.UpdateVPN = (email) => {
+
+    let query = 'CALL UpdateVpn(?)';
+
+    return new Promise(
+        (resolve, reject) => {
+            con.query(query, email, (err, results) => {
+                if (err) {
+                    console.log("query not working");
+                    return reject(err);
+                }
+                //console.log(results);
+                return resolve(results);
+            });
+        }
+    );
+};
+
 //Delete user from database
 db.DeleteUser = (id) => {
 
@@ -131,7 +123,7 @@ db.DeleteUser = (id) => {
                     console.log("query not working");
                     return reject(err);
                 }
-               // console.log("from DB: ",results);
+                // console.log("from DB: ",results);
                 return resolve(results);
             });
         }
@@ -142,7 +134,7 @@ db.DeleteUser = (id) => {
 //Get Info mail from database
 db.GetInfo = () => {
 
-    let query = 'SELECT * FROM mailinfo';
+    let query = 'SELECT * FROM mailInfo';
 
     return new Promise(
         (resolve, reject) => {
@@ -151,7 +143,7 @@ db.GetInfo = () => {
                     console.log("query not working");
                     return reject(err);
                 }
-               // console.log("from DB: ",results);
+                // console.log("from DB: ",results);
                 return resolve(results);
             });
         }
@@ -163,7 +155,7 @@ db.GetInfo = () => {
 db.UpdateInfo = (infoText) => {
 
     let query = 'CALL updateInfo(?)';
-console.log(infoText);
+    console.log(infoText);
     return new Promise(
         (resolve, reject) => {
             con.query(query, infoText, (err, results) => {
@@ -171,7 +163,7 @@ console.log(infoText);
                     console.log("query not working");
                     return reject(err);
                 }
-                console.log("from DB: ",results);
+                console.log("from DB: ", results);
                 return resolve(results);
             });
         }

@@ -2,22 +2,49 @@ const { json } = require('express');
 const express = require('express');
 const router = express.Router();
 const db = require('../DB/DBManager');
+const radius = require('../DB/RadiusDB');
 const query = require('querystring');
 
 
-router.get('/test',(req,res) =>{
-    // console.log(res);
- // let result =  db.testcon();
- // console.log(result);
- res.json(result);
+router.get('/test', async (req, res, next) => {
+
+    try {
+        const data = req.body;
+        console.log(data);
+        let results = await radius.GetFromRadius(data.userName);
+
+        console.log(results);
+        res.json(results);
+
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+});
+
+
+router.get('/testElev', async (req, res, next) => {
+
+    try {
+        const data = req.body;
+        let results = await db.getUsers();
+
+
+        console.log("logData: ", results);
+        res.json(results);
+
+    } catch (error) {
+        console.log("error kent den store: ", error);
+        res.sendStatus(500);
+    }
 });
 
 
 router.get('/Getusers', async (req, res, next) => {
     try {
 
-     let results = await db.getUsers();
-    //    let results = 'ok';
+        let results = await db.getUsers();
+        //    let results = 'ok';
         console.log(results);
         res.json(results);
 
@@ -77,13 +104,22 @@ router.delete('/RemoveUser', async (req, res) => {
     try {
         const data = req.body;
         console.log(req.body);
-
-
+        let splittedData = data.email.split('@');
+        let username = splittedData[0];
+        console.log("user name: ", username);
+        let userToBeRemoved = await radius.GetFromRadius(username);
+        console.log(userToBeRemoved[0].length);
+        if (userToBeRemoved[0].length > 0) {
+            let radiusResult = await radius.RemoveUser(username);
+            console.log(radiusResult);
+        }
+       
         let result = await db.DeleteUser(data.id);
-        
+        console.log(result);
         if (result.affectedRows > 0) {
             res.status(200).send({ status: 'OK' });
-        }
+        };
+
         res.status(200);
 
     } catch (error) {
@@ -92,12 +128,13 @@ router.delete('/RemoveUser', async (req, res) => {
     }
 });
 
-router.get('/admin/:data', async (req, res) => {
+router.get('/admin/', async (req, res) => {
 
     const data = req.query;
     console.log("body: ", data.userName);
-    console.log("body: ", data.password);
+    console.log("body: ", data.passWord);
     try {
+
 
         let results = await db.checkAdminLogin(data.userName, data.passWord);
 
