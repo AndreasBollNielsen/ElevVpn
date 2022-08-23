@@ -1,6 +1,6 @@
 const mysql = require('mysql');
 const config = require('../DBConfig.json');
-
+const { json } = require('express');
 
 const con = mysql.createPool({
     connectionLimit: 100,
@@ -53,7 +53,7 @@ db.AddUserEmail = (email) => {
 };
 
 //check if admin credentials is valid
-db.checkAdminLogin = (username, password) => {
+db.checkAdminLogin = async (username, password) => {
 
     console.log("username: ", username);
     console.log("password: ", password);
@@ -66,8 +66,33 @@ db.checkAdminLogin = (username, password) => {
                     console.log("query not working");
                     return reject(err);
                 }
-                console.log("DB Results: ", results[0]);
+              //  const rowData = JSON.stringify(results[0]);
+             //   console.log( results[0]);
+                // const UserValidated = security.passwordCompare(password,results[0].passWord);
+                // console.log("user validation: ", UserValidated);
                 return resolve(results[0]);
+            });
+        }
+    );
+};
+
+//update admin password
+db.UpdateAdminLogin = (username, password) => {
+
+    console.log("username: ", username);
+    console.log("password: ", password);
+    let query = "CALL ChangePassword(?,?)";
+   
+    console.log("data for database: " +`username: ${username} hashed password: ${password}`);
+    return new Promise(
+        (resolve, reject) => {
+            con.query(query, [username, password], (err, results) => {
+                if (err) {
+                    console.log("query not working");
+                    return reject(err);
+                }
+                console.log("DB Results: ", results.affectedRows);
+                return resolve(results);
             });
         }
     );

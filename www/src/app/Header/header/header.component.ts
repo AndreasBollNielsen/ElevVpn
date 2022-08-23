@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { observable } from 'rxjs';
 import { AdminAuthenticatorService } from 'src/app/Services/admin-authenticator.service';
 
@@ -11,7 +12,9 @@ export class HeaderComponent implements OnInit {
 
  public LoggedIn: boolean = false;
 
-  constructor(private auth: AdminAuthenticatorService) {
+  constructor(private auth: AdminAuthenticatorService,private router: Router) {
+
+    router.navigate(['/user']);
 
     this.auth.loginSubject.subscribe((loginSubject:boolean)=>{
 

@@ -71,7 +71,7 @@ router.post("/SendMail", async (req, res) => {
           return console.log(error);
         } else {
           console.log("Message sent: " + info.response);
-          res.status(200).send({ status: 'OK' });
+          res.status(200).json({"info": "Bruger godkendt, du modtager om få minutter en mail med login"});
         }
 
       });
@@ -81,6 +81,10 @@ router.post("/SendMail", async (req, res) => {
       res.sendStatus(500);
     }
 
+  }
+  else
+  {
+    res.status(500).send('Brugeren ikke godkendt, kontakt din underviser');
   }
 });
 
@@ -92,24 +96,6 @@ SplitMail = (email) => {
   const data = { "userName": temp[0], "email": email };
   return data;
 }
-
-
-router.get('/testemail', async (req, res, next) => {
-
-  try {
-    const data = req.body;
-    let results = await db.getUsers();
-
-
-    console.log("logData: ", results);
-    res.json(results);
-
-  } catch (error) {
-    console.log("error kent den store: ", error);
-    res.sendStatus(500);
-  }
-});
-
 
 
 module.exports = router;

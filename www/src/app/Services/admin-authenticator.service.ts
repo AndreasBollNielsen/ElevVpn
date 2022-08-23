@@ -11,18 +11,17 @@ export class AdminAuthenticatorService {
   adminuser: any[] = [];
   authenticated: boolean = false;
   public loginSubject: Subject<boolean> = new Subject<boolean>();
-  //public activeLogin = this.loginSubject.asObservable();
+  Passwordresponse$: BehaviorSubject<any> = new BehaviorSubject<any>('');
+
   constructor(private api: ApiServiceService) {
 
     this.authenticated = this.getCookie("admin") != null ? true:false;
-    //this.authenticated = localStorage.getItem("admin") != null ? true : false;
   }
 
   Login(userData: any): Observable<boolean> {
 
     console.log('calling api login: ', userData);
 
-    // let subject = new Subject<boolean>();
 
     this.api.CheckAdminLogin(userData).subscribe(data => {
       console.log("login: ", data.length);
@@ -32,7 +31,7 @@ export class AdminAuthenticatorService {
         console.log("authenticated");
         this.authenticated = true;
       //  localStorage.setItem('admin', 'loggedIn');
-        this.setCookie("admin","loggedIn",0.001);
+        this.setCookie("admin","loggedIn",0.1);
         login = this.authenticated;
 
       }
@@ -42,6 +41,24 @@ export class AdminAuthenticatorService {
     });
     return this.loginSubject.asObservable();
   }
+
+
+UpdatePassword(userData:Admin)
+{
+  console.log("sending from handler: ",userData);
+  this.api.UpdateAdminLogin(userData).subscribe(response => {
+
+    console.log("password response: ", response.success);
+    this.Passwordresponse$.next(response.success);
+  },
+    error => {
+      this.Passwordresponse$.next(error.error);
+      console.log(error.error);
+    }
+
+
+  )
+}
 
   Logout(): Observable<boolean> {
    // localStorage.removeItem('admin');

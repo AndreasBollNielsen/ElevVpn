@@ -4,7 +4,7 @@ const router = express.Router();
 const db = require('../DB/DBManager');
 const radius = require('../DB/RadiusDB');
 const query = require('querystring');
-
+const security = require('../Crypto/SecurityManager');
 
 router.get('/test', async (req, res, next) => {
 
@@ -113,7 +113,7 @@ router.delete('/RemoveUser', async (req, res) => {
             let radiusResult = await radius.RemoveUser(username);
             console.log(radiusResult);
         }
-       
+
         let result = await db.DeleteUser(data.id);
         console.log(result);
         if (result.affectedRows > 0) {
@@ -131,19 +131,56 @@ router.delete('/RemoveUser', async (req, res) => {
 router.get('/admin/', async (req, res) => {
 
     const data = req.query;
-    console.log("body: ", data.userName);
-    console.log("body: ", data.passWord);
+    //  console.log("body: ", data.userName);
+    //  console.log("body: ", data.passWord);
     try {
 
 
         let results = await db.checkAdminLogin(data.userName, data.passWord);
+        console.log(results);
+        const hashedPassword = results[0].passWord;
+        const validation = await security.passwordCompare(data.passWord, hashedPassword)
+        console.log("hashed password: ", validation);
+        if (validation) {
+            res.json(results);
+            console.log("true: ", results.length);
+            res.status(200, results);
+        }
+        else {
+            results = [];
+            console.log("false: ", results.length);
+            res.json(results);
+            res.status(500, results);
+        }
 
-        res.json(results);
-        res.status(200, results);
+
 
     } catch (error) {
         console.log(error);
         res.sendStatus(500);
+    }
+});
+
+router.patch('/admin/update', async (req, res) => {
+
+    const data = req.body;
+    console.log("update password: " + `username: ${data.userName} password: ${data.passWord}`);
+
+    try {
+
+        const hashedPassword = await security.Encrypt(data.passWord);
+        let results = await db.UpdateAdminLogin(data.userName, hashedPassword);
+        if (results.affectedRows > 0) {
+            res.status(200).send({ "success": "password opdateret" });
+        }
+        else {
+            res.status(500).send("ups, brugeren forkert bruger");
+        }
+
+
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500).send("hovsa forbindelsen røg");
     }
 });
 

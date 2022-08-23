@@ -34,7 +34,6 @@ export class AdminLoginComponent implements OnInit {
       }
       else
       {
-        console.log("error wrong login");
         this.ErrorMsg = 'Brugernavn eller password inkorrekt. Henvend dig til CFMN';
       }
 

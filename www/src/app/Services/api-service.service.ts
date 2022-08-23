@@ -26,21 +26,28 @@ export class ApiServiceService {
   SendEmail(data: any) {
 
     console.log("sending mail from crud: ", data);
-    return this.http.post<any>('http://localhost:3600/api/email/SendMail', data).subscribe();
+    return this.http.post<any>('http://localhost:3600/api/email/SendMail', data);
   }
 
   CheckAdminLogin(data: any) {
 
-    const d = JSON.stringify(data);
-    const d2 = JSON.stringify({ userName: 'admin', passWord: 'admin' });
     const username = data.userName;
     const password = data.passWord;
-    console.log("test");
     
-    // console.log('user data: +' + `${username}` + `${password}`);
-    // console.log("before api: ", d2);
     console.log('query: ' + 'http://172.18.150.51:3600/api/admin/?' + `userName=${username}&passWord=${password}`);
-    return this.http.get<any>('http://172.18.150.51:3600/api/admin/?' + `userName=${username}&passWord=${password}`);
+    // return this.http.get<any>('http://172.18.150.51:3600/api/admin/?' + `userName=${username}&passWord=${password}`);
+    return this.http.get<any>('http://localhost:3600/api/admin/?' + `userName=${username}&passWord=${password}`);
+    
+  }
+
+  UpdateAdminLogin(data: Admin) {
+
+    const userData = {"userName": data.userName,"passWord": data.passWord};
+    
+    
+    console.log('query: ' + 'http://172.18.150.51:3600/api/admin/ ' +userData);
+    // return this.http.get<any>('http://172.18.150.51:3600/api/admin/?' + `userName=${username}&passWord=${password}`);
+    return this.http.patch<any>('http://localhost:3600/api/admin/update',userData);
     
   }
 

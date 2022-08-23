@@ -9,9 +9,20 @@ import { EmailHandlerService } from 'src/app/Services/email-handler.service';
   styleUrls: ['./user-view.component.css'],
 })
 export class UserViewComponent implements OnInit {
-  constructor(private api: ApiServiceService, private formbuilder: FormBuilder, private mailHandler:EmailHandlerService) {}
+  
+  mailResponse:string ="";
+  
+  constructor(private api: ApiServiceService, private formbuilder: FormBuilder, private mailHandler:EmailHandlerService) {
+   
+  }
 
-  ngOnInit(): void {}
+
+  ngOnInit(): void {
+
+    this.mailResponse = "";
+    
+
+  }
 
   requestForm = this.formbuilder.group(
     {
@@ -23,6 +34,14 @@ export class UserViewComponent implements OnInit {
     let data = this.requestForm.value;
     this.mailHandler.SendEmail(data);
     console.log("sending mail from component: ",data);
+
+    this.mailHandler.response$.subscribe(response =>{
+      next: 
+      if(this.mailResponse != response)
+      {
+        this.mailResponse = response;
+      }
+    })
     //this.api.SendEmail();
   }
 }

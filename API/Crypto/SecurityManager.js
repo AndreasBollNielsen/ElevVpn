@@ -5,24 +5,17 @@ const generator = require('generate-password');
 encryption = {};
 const salt = 10;
 
-encryption.Encrypt = (password) => {
+encryption.Encrypt = async (password) => {
 
-return new Promise ((resolve,error)=>{
+    return new Promise((resolve, error) => {
 
-    bcrypt.hash(password, salt, (err, hash) => {
-        console.log("hashed and salted password: ", hash);
-        return resolve(hash);
-    })
+        bcrypt.hash(password, salt, (err, hash) => {
+            console.log("hashed and salted password: ", hash);
+            return resolve(hash);
+        })
 
-});
+    });
 
-   
-}
-
-
-
-
-encryption.Decrypt = () => {
 
 }
 
@@ -39,14 +32,23 @@ encryption.GeneratePassword = async () => {
     });
 
     let hashedPassword = await encryption.Encrypt(password);
-    let passwords = {"password":password,"hashed": hashedPassword};
+    let passwords = { "password": password, "hashed": hashedPassword };
 
     return passwords;
 
 }
 
-encryption.passwordCompare = () => {
+encryption.passwordCompare = (password, hashedPassword) => {
 
+   // console.log("password compare: " + `password plain: ${password} hashed password: ${hashedPassword}`);
+    return new Promise((resolve, error) => {
+
+        bcrypt.compare(password, hashedPassword, (err, hash) => {
+            console.log("hasresult: ", hash);
+            return resolve(hash);
+        })
+
+    });
 }
 
 
