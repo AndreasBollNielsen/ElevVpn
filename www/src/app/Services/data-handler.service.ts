@@ -9,12 +9,33 @@ import { ApiServiceService } from './api-service.service';
 export class DataHandlerService {
 
   users$: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
+  feedback$: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
   constructor(private crud: ApiServiceService) {
 
 
   }
 
+
+  UploadUsers(data:string){
+
+    //const emails = data.split(/\r?\n?\s/);
+    const emails = data.replace(/[\n,;:]/g,","). split(/[, ]+/);
+
+    console.log(emails);
+
+
+    this.crud.AddUserEmail(emails).subscribe(response =>{
+      next:
+      console.log(response.success);
+      this.feedback$.next(response.success);
+    },
+    error =>{
+      console.log(error.error);
+      this.feedback$.next(error.error);
+    })
+
+  }
 
   loadUsers() {
     let tempUsers;
