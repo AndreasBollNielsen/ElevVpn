@@ -2,13 +2,16 @@ const mysql = require('mysql');
 const config = require('../DBConfig.json');
 const { json } = require('express');
 
+//DBContext = config.ElevVpn;
+DBContext = config.test;
+
 const con = mysql.createPool({
     connectionLimit: 100,
-    user: config.test.user,
-    database: config.test.database,
-    host: config.test.host,
-    port: config.test.port,
-    password: config.test.password
+    user: DBContext.user,
+    database: DBContext.database,
+    host: DBContext.host,
+    port: DBContext.port,
+    password: DBContext.password
 
 });
 
@@ -34,22 +37,48 @@ db.getUsers = () => {
 };
 
 //add multiple emails to database
-db.AddUserEmail = (email) => {
+db.AddUserEmail = (emails) => {
 
     let query = 'CALL AddUser(?)';
-    // console.log(email);
+    let DBresults = [];
+    let promises = [];
+    
     return new Promise(
+
+        //add list of promises and wait for it to finish
         (resolve, reject) => {
+
+            for (let index = 0; index < emails.length; index++) {
+                const email = emails[index];
+
+                promises.push(AddUserToDB(email));
+            }
+
+            Promise.all(promises).then(() => {
+                console.log("add users: ", DBresults.length);
+                return resolve(DBresults);
+            })
+                .catch(error => { return reject(error) })
+
+
+        }
+    );
+
+    //promise that inserts data to DB
+    function AddUserToDB(email) {
+        return new Promise((resolve, reject) => {
             con.query(query, email, (err, results) => {
                 if (err) {
                     console.log("query not working");
                     return reject(err);
                 }
-                // console.log("add users: ", results);
-                return resolve(results);
+                DBresults.push(results);
+                resolve();
+                console.log("db result: ", DBresults.length);
+
             });
-        }
-    );
+        })
+    };
 };
 
 //check if admin credentials is valid
@@ -66,8 +95,8 @@ db.checkAdminLogin = async (username, password) => {
                     console.log("query not working");
                     return reject(err);
                 }
-              //  const rowData = JSON.stringify(results[0]);
-             //   console.log( results[0]);
+                //  const rowData = JSON.stringify(results[0]);
+                //   console.log( results[0]);
                 // const UserValidated = security.passwordCompare(password,results[0].passWord);
                 // console.log("user validation: ", UserValidated);
                 return resolve(results[0]);
@@ -82,8 +111,8 @@ db.UpdateAdminLogin = (username, password) => {
     console.log("username: ", username);
     console.log("password: ", password);
     let query = "CALL ChangePassword(?,?)";
-   
-    console.log("data for database: " +`username: ${username} hashed password: ${password}`);
+
+    console.log("data for database: " + `username: ${username} hashed password: ${password}`);
     return new Promise(
         (resolve, reject) => {
             con.query(query, [username, password], (err, results) => {

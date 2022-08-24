@@ -1,0 +1,9 @@
+DROP PROCEDURE IF EXISTS AddUserBulk;
+DELIMITER //  
+CREATE PROCEDURE AddUserBulk (
+    IN _email VARCHAR(100)
+)  
+BEGIN  
+    INSERT into users (email, hasVpn, isSticky)
+VALUES (_email,false,false); 
+END // 

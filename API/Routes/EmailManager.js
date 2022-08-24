@@ -6,7 +6,7 @@ const router = express.Router();
 const config = require('../Config.json');
 const db = require('../DB/DBManager');
 const radius = require('../DB/RadiusDB');
-const security = require('../Crypto/SecurityManager');
+const security = require('../Auth/SecurityManager');
 
 
 

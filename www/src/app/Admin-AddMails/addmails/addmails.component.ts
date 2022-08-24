@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/Interfaces/user';
 import { ApiServiceService } from 'src/app/Services/api-service.service';
+import { DataHandlerService } from 'src/app/Services/data-handler.service';
 import { EmailHandlerService } from 'src/app/Services/email-handler.service';
 
 @Component({
@@ -12,23 +13,23 @@ export class AddmailsComponent implements OnInit {
 
   emails: string = '';
   Userlist: User[] = [];
-  constructor(private api: ApiServiceService) { }
+  response: string ='';
+  constructor(private dataHandler: DataHandlerService) { }
 
   ngOnInit(): void {
   }
 
-  GetWhitelistedUsers(): string {
-    return this.Userlist.map(x => x.email).join('\n');
-  }
+  // GetWhitelistedUsers(): string {
+  //   return this.Userlist.map(x => x.email).join('\n');
+  // }
 
   AddEmails(data: string) {
-    const emails = data.split(/\r?\n/);
 
-    console.log("sending mail from add emails component: ", emails);
-    //  const resp = ;
-    this.api.AddUserEmail(emails);
-
-    // console.log('finised sending: ' + JSON.stringify(arr));
+    this.dataHandler.UploadUsers(data)
+    this.dataHandler.feedback$.subscribe((response:string) =>{
+      next:
+      this.response = response;
+    })
   }
 
 }

@@ -4,7 +4,7 @@ const router = express.Router();
 const db = require('../DB/DBManager');
 const radius = require('../DB/RadiusDB');
 const query = require('querystring');
-const security = require('../Crypto/SecurityManager');
+const security = require('../Auth/SecurityManager');
 
 router.get('/test', async (req, res, next) => {
 
@@ -60,23 +60,64 @@ router.post('/AddUsers', async (req, res) => {
 
     try {
         const data = req.body;
-        console.log(data);
-        var results = [];
-        Object.keys(data).forEach(async x => {
+        const userValidation = await db.getUsers();
+        let validEmails = [];
+        let sameEmail;
+        let validation = true;
 
-            const result = await db.AddUserEmail(data[x]);
-            results.push(result);
-            console.log(results[results.length - 1]);
+
+
+
+        //add unique emails to valid list
+        for (let index = 0; index < data.length; index++) {
+            const currentEmail = data[index];
+            if(currentEmail == "")
+            {
+                console.log("emtpy: ", index);
+                return;
+            }
+            
+            validation = true;
+            for (let index = 0; index < userValidation.length; index++) {
+
+                if (userValidation[index].email == currentEmail) {
+                    validation = false;
+                    sameEmail = userValidation[index].email;
+
+                    //break out of loop
+                    index = userValidation.length;
+                }
+
+
+            }
+
+            //if email is unique add it to DB
+            if (validation) {
+                validEmails.push(currentEmail);
+                console.log("unique email: ",currentEmail);
+            }
+            else {
+                console.log("found same", sameEmail);
+            }
+
+
+        }
+
+       
+
+
+        // console.log("added user: ",data[x]);
+        const result = db.AddUserEmail(validEmails);
+        result.then((response)=>{
+            console.log("unique emails: ", response);
+            res.status(200).send({ "success": `${response.length}` + " nye brugere tilføjet" });
         })
 
 
 
-        res.json(results);
-        res.status(200);
-
     } catch (error) {
         console.log(error);
-        res.sendStatus(500);
+        res.sendStatus(500).send("ingen forbindelse til databasen");
     }
 });
 
@@ -106,13 +147,16 @@ router.delete('/RemoveUser', async (req, res) => {
         console.log(req.body);
         let splittedData = data.email.split('@');
         let username = splittedData[0];
-        console.log("user name: ", username);
-        let userToBeRemoved = await radius.GetFromRadius(username);
-        console.log(userToBeRemoved[0].length);
-        if (userToBeRemoved[0].length > 0) {
-            let radiusResult = await radius.RemoveUser(username);
-            console.log(radiusResult);
-        }
+
+        // console.log("user name: ", username);
+        // let userToBeRemoved = await radius.GetFromRadius(username);
+
+        // console.log(userToBeRemoved[0].length);
+        // if (userToBeRemoved[0].length > 0) {
+
+        //     let radiusResult = await radius.RemoveUser(username);
+        //     console.log(radiusResult);
+        // }
 
         let result = await db.DeleteUser(data.id);
         console.log(result);
@@ -141,6 +185,7 @@ router.get('/admin/', async (req, res) => {
         const hashedPassword = results[0].passWord;
         const validation = await security.passwordCompare(data.passWord, hashedPassword)
         console.log("hashed password: ", validation);
+
         if (validation) {
             res.json(results);
             console.log("true: ", results.length);

@@ -9,12 +9,16 @@
                 </div>
                 
                 <div class="p-1">
-                    <textarea #datainput rows="15" cols="45"></textarea>
+                    <textarea #datainput rows="15" cols="45" [(ngModel)]="emails"></textarea>
                 </div>
                 <div class="p-1">
    
-                    <button (click)="AddEmails(datainput.value)" class="btn btn-dark ">Tilføj til whitelist</button>
-                    <!-- <button (click)="getusers()" class="btn btn-dark ">Testt</button> -->
+                    <button (click)="AddEmails(datainput.value)" class="btn btn-dark " [disabled]="!emails">Tilføj til whitelist</button>
+                    
+                </div>
+
+                <div class="p-1" *ngIf="response!=''">
+                    {{response}}
                 </div>
 
             </div>
