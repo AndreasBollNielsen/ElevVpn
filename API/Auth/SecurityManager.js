@@ -3,6 +3,7 @@ const generator = require('generate-password');
 
 //create json object that holds all the methods
 encryption = {};
+const loginAttempts = [];
 const salt = 10;
 
 encryption.Encrypt = async (password) => {

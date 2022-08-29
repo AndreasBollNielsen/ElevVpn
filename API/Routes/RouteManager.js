@@ -45,7 +45,7 @@ router.get('/Getusers', async (req, res, next) => {
 
         let results = await db.getUsers();
         //    let results = 'ok';
-       // console.log(results);
+        // console.log(results);
         res.json(results);
 
     } catch (error) {
@@ -140,7 +140,7 @@ router.post('/UpdateSticky', async (req, res) => {
 
 router.delete('/RemoveUser', async (req, res) => {
 
-   // console.log("reached endpoint delete");
+    // console.log("reached endpoint delete");
     try {
         const data = req.body;
         console.log(req.body);
@@ -174,35 +174,88 @@ router.delete('/RemoveUser', async (req, res) => {
 router.get('/admin/', async (req, res) => {
 
     const data = req.query;
-    //  console.log("body: ", data.userName);
-    //  console.log("body: ", data.passWord);
-    try {
+    console.log(security.loginAttempts);
+    let loginResult;
 
+    //check if user has attempted too many times
+    const userAttempts = security.loginAttempts.filter(x => new Date(x.Time).getTime() + (1000 * 60 * 5) > new Date().getTime()).filter(x => x.Username == username);
+    // The same username tried to login more than 3 times within a timespan of 5 minutes
+    if (userAttempts.length >= 3) {
+        userAttempts.forEach(el => {
+            security.loginAttempts[loginAttempts.findIndex(x => x == el)].Time = new Date();
+        });
 
-        let results = await db.checkAdminLogin(data.userName, data.passWord);
-        console.log(results);
-        const hashedPassword = results[0].passWord;
-        const validation = await security.passwordCompare(data.passWord, hashedPassword)
-        console.log("hashed password: ", validation);
-
-        if (validation) {
-            res.json(results);
-            console.log("true: ", results.length);
-            res.status(200, results);
-        }
-        else {
-            results = [];
-            console.log("false: ", results.length);
-            res.json(results);
-            res.status(500, results);
-        }
-
-
-
-    } catch (error) {
-        console.log(error);
-        res.sendStatus(500);
+        res.status(403).send('Too many failed attempts');
+        return;
     }
+
+    // Authorize
+    //do my db shit.
+    if (CheckLogin(username, password)) {
+        // console.log(`Welcome back ${username}`);
+        res.json(loginResult);
+        res.status(200).send(`Welcome back ${username}`);
+        return;
+    }
+    else {
+        // Add to failed login attempts array
+        security.loginAttempts.push({
+            "Username": username,
+            "Time": new Date()
+        });
+
+        // Remove old elements (if any)
+        let newArray = security.loginAttempts.filter(x => new Date(x.Time).getTime() + (1000 * 60 * 5) < new Date().getTime());
+
+        if (newArray.length >= 1) {
+            newArray.forEach(el => {
+                security.loginAttempts.splice(security.loginAttempts.findIndex(x => x == el), 1);
+            });
+        }
+
+        res.json(loginResult);
+        res.status(403).send('Hovsa');
+        return;
+    }
+
+
+
+    function CheckLogin(username, password) {
+
+        try {
+
+
+            let results = await db.checkAdminLogin(username, password);
+            console.log(results);
+            const hashedPassword = results[0].passWord;
+            const validation = await security.passwordCompare(data.passWord, hashedPassword)
+            console.log("hashed password: ", validation);
+
+            if (validation) {
+                loginResult = results;
+                res.json(results);
+                console.log("true: ", results.length);
+                res.status(200, results);
+                return true;
+            }
+            else {
+                results = [];
+                loginResult = results;
+                console.log("false: ", results.length);
+                res.json(results);
+                res.status(500, results);
+                return false;
+            }
+
+
+
+        } catch (error) {
+            console.log(error);
+            res.sendStatus(500);
+            return false;
+        }
+    }
+
 });
 
 router.patch('/admin/update', async (req, res) => {
