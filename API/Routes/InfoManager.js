@@ -30,7 +30,7 @@ router.post('/UpdateInfo', async (req, res) => {
             res.sendStatus(500);
             return;
         }
-        const result = await db.UpdateInfo(data.textInfo);
+        const result = await db.UpdateInfo(data.textInfo,data.link);
         
         res.json(result);
         res.status(200);

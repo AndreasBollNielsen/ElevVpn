@@ -1,4 +1,4 @@
-<div class="row container-fluid infoBox">
+<div class="row container-fluid">
 
     <div class="col-3"></div>
 
@@ -6,19 +6,26 @@
 
 
 
-        <div class="row">
+        <div class="row ">
             <h2>Indhold følgemail:</h2>
-            <div class="p-1">
+            <div class="p-1 inputContainer">
                 <textarea #datainput rows="7" [(ngModel)]='modifiedInfoText' (focus)="ResetFeedback()"></textarea>
             </div>
         </div>
+
+        <!-- <div class="row">
+            <h3>FølgeLink:</h3>
+            <div class="p-1 inputContainer">
+                <input #linkInput (focus)="ResetFeedback()" [(ngModel)]="link">
+            </div>
+        </div> -->
 
     </div>
 
     <div class="col-3"></div>
 </div>
 
-<div class="row container-fluid">
+<div class="row container-fluid ">
 
     <div class="col-md-3"></div>
     <div class="col-md-6">
@@ -32,17 +39,17 @@
         </div>
        
         <!--example box-->
-        <div class="row border exampleBox">
+        <div class="row inputContainer">
             <div class="col-md-12">Hej &lt;VPN brugernavn&gt;</div>
             <div class="col-md-12" *ngIf="modifiedInfoText ==''">{{infotext}}</div>
-            <div class="col-md-12">{{modifiedInfoText}}</div>
+            <div class="col-md-12">{{modifiedInfoText}}</div>           
             <div class="col-md-12">Log på med &lt;VPN brugernavn&gt; og følgende kode: &lt;autogenereret kode&gt;</div>
         </div>
 
         <div class="row text-center">
             <div class="p-2">
 
-                <button (click)="UpdateInfo(datainput.value)" class="btn btn-dark ">Tilføj</button>
+                <button (click)="UpdateInfo(datainput.value)" class="btn btn-dark">Tilføj</button>
                <div class="col p-2" *ngIf="feedbackText !=''">{{feedbackText}}</div>
             </div>
         </div>

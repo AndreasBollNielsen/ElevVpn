@@ -2,8 +2,8 @@ const mysql = require('mysql');
 const config = require('../DBConfig.json');
 const { json } = require('express');
 
-//DBContext = config.ElevVpn;
-DBContext = config.test;
+DBContext = config.ElevVpn;
+//DBContext = config.test;
 
 const con = mysql.createPool({
     connectionLimit: 100,
@@ -42,7 +42,7 @@ db.AddUserEmail = (emails) => {
     let query = 'CALL AddUser(?)';
     let DBresults = [];
     let promises = [];
-    
+
     return new Promise(
 
         //add list of promises and wait for it to finish
@@ -206,13 +206,13 @@ db.GetInfo = () => {
 
 
 //Update Info mail from database
-db.UpdateInfo = (infoText) => {
+db.UpdateInfo = (infoText,link) => {
 
-    let query = 'CALL updateInfo(?)';
+    let query = 'CALL updateInfo(?,?)';
     console.log(infoText);
     return new Promise(
         (resolve, reject) => {
-            con.query(query, infoText, (err, results) => {
+            con.query(query, [infoText,link], (err, results) => {
                 if (err) {
                     console.log("query not working");
                     return reject(err);

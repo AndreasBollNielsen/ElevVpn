@@ -12,11 +12,11 @@ const security = require('../Auth/SecurityManager');
 
 
 const transporter = mailer.createTransport(smtp({
-  host: 'Smtp.efif.dk',
-  port: 587,
+  host: 'mail.kpdesign.dk',
+  port: 465,
   auth: {
-    user: config.user,
-    pass: config.pass
+    user: config.KpDesign.user,
+    pass: config.KpDesign.pass
   },
   tls: {
     rejectUnauthorized: false
@@ -24,7 +24,7 @@ const transporter = mailer.createTransport(smtp({
 }));
 
 let mailOptions = {
-  from: "Noreply-zbc-elev-vpn", // sender address
+  from: "andreas@kpdesign.dk", // sender address
   to: "", // list of receivers
   subject: "VPN adgang", // Subject line
   html: "", // html body
@@ -34,10 +34,11 @@ router.post("/SendMail", async (req, res) => {
 
   let data = req.body
   const userData = SplitMail(req.body.email);
-  console.log(userData);
+ // console.log(userData);
 
   //1 check if email exists in whitelist & update vpn status
-  const dbResult = await db.UpdateVPN(data.email);
+  const dbResult = await db.UpdateVPN(userData.email);
+  console.log("checking excisting users: ", dbResult);
   if (dbResult.affectedRows > 0) {
 
     //2 generate secure password
@@ -45,22 +46,29 @@ router.post("/SendMail", async (req, res) => {
     console.log("password: ", passwords.hashed);
 
     //3 add new user to radius with secure password
+    //replaces old user if one exists
     console.log("username: ", userData.userName);
-    // const radiusResult = radius.AddUser(data.userName, passwords.hashed);
-    // console.log("radius feedback: ", radiusResult);
+    const Radiususer = await radius.GetFromRadius(userData.userName);
+    console.log("check user exists in radius server: ", Radiususer.length);
+    if (Radiususer.length > 0) {
+      await radius.RemoveUser(userData.userName);
+    }
+    const radiusResult = await radius.AddUser(userData.userName, passwords.hashed);
+    console.log("radius feedback: ", radiusResult);
 
     //4 get email info from db
     const infoResult = await db.GetInfo();
     const mailInfo = infoResult[0].info;
+    //const link = infoResult[0].link;
     console.log("mail info: ", mailInfo);
 
     //5 generate email body
     const body = `Hej ${userData.userName} <br>  <br>
     
-    ${mailInfo} <p>klik <a href="https://heynode.com/blog/2020-04/salt-and-hash-passwords-bcrypt/">her</a> for at downloade</p>
+    ${mailInfo} <br> <br>
     
-    log på med ${userData.userName} initialer og følgende kode: ${passwords.password}`;
-    
+    log på med ${userData.userName} initialer og følgende kode:   ${passwords.password}`;
+
     //6 send email
     mailOptions.to = data.email;
     mailOptions.html = body;
@@ -68,22 +76,23 @@ router.post("/SendMail", async (req, res) => {
 
       transporter.sendMail(mailOptions, function (error, info) {
         if (error) {
+          res.status(500).send('bruger godkendt, fejl på mail');
           return console.log(error);
         } else {
           console.log("Message sent: " + info.response);
-          res.status(200).json({"info": "Bruger godkendt, du modtager om få minutter en mail med login"});
+          res.status(200).json({ "info": "Bruger godkendt, du modtager om få minutter en mail med login" });
         }
 
       });
     }
     catch (error) {
       console.log(error);
-      res.sendStatus(500);
+      res.status(500).send('bruger godkendt, fejl på mail');
+      //res.sendStatus(500);
     }
 
   }
-  else
-  {
+  else {
     res.status(500).send('Brugeren ikke godkendt, kontakt din underviser');
   }
 });

@@ -1,12 +1,16 @@
 textarea{
     resize: none;
     width: 100%;
-    border-radius: 30px;
+    border-radius: 10px;
     padding: 20px;
+    border: none;
+    outline: none;
 }
 
-.exampleBox{
-    height: 200px;
-    border-radius: 30px;
+
+input{
+    width: 100%;
     padding: 20px;
+    border: none;
+    outline: none;
 }

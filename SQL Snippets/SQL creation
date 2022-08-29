@@ -10,6 +10,7 @@ CREATE TABLE adminuser(
 CREATE TABLE mailInfo(
     id INT AUTO_INCREMENT,
     info VARCHAR(5000),
+    link VARCHAR(500),
     PRIMARY KEY (id)
 );
 

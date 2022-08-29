@@ -13,7 +13,7 @@ router.get('/test', async (req, res, next) => {
         console.log(data);
         let results = await radius.GetFromRadius(data.userName);
 
-        console.log(results);
+        console.log(results.length);
         res.json(results);
 
     } catch (error) {
@@ -45,7 +45,7 @@ router.get('/Getusers', async (req, res, next) => {
 
         let results = await db.getUsers();
         //    let results = 'ok';
-        console.log(results);
+       // console.log(results);
         res.json(results);
 
     } catch (error) {
@@ -71,12 +71,11 @@ router.post('/AddUsers', async (req, res) => {
         //add unique emails to valid list
         for (let index = 0; index < data.length; index++) {
             const currentEmail = data[index];
-            if(currentEmail == "")
-            {
+            if (currentEmail == "") {
                 console.log("emtpy: ", index);
                 return;
             }
-            
+
             validation = true;
             for (let index = 0; index < userValidation.length; index++) {
 
@@ -94,7 +93,7 @@ router.post('/AddUsers', async (req, res) => {
             //if email is unique add it to DB
             if (validation) {
                 validEmails.push(currentEmail);
-                console.log("unique email: ",currentEmail);
+                console.log("unique email: ", currentEmail);
             }
             else {
                 console.log("found same", sameEmail);
@@ -103,12 +102,12 @@ router.post('/AddUsers', async (req, res) => {
 
         }
 
-       
+
 
 
         // console.log("added user: ",data[x]);
         const result = db.AddUserEmail(validEmails);
-        result.then((response)=>{
+        result.then((response) => {
             console.log("unique emails: ", response);
             res.status(200).send({ "success": `${response.length}` + " nye brugere tilføjet" });
         })
@@ -141,7 +140,7 @@ router.post('/UpdateSticky', async (req, res) => {
 
 router.delete('/RemoveUser', async (req, res) => {
 
-    console.log("reached endpoint delete");
+   // console.log("reached endpoint delete");
     try {
         const data = req.body;
         console.log(req.body);
@@ -149,17 +148,17 @@ router.delete('/RemoveUser', async (req, res) => {
         let username = splittedData[0];
 
         // console.log("user name: ", username);
-        // let userToBeRemoved = await radius.GetFromRadius(username);
+        let userToBeRemoved = await radius.GetFromRadius(username);
 
-        // console.log(userToBeRemoved[0].length);
-        // if (userToBeRemoved[0].length > 0) {
+        console.log("deleting from radius: ", userToBeRemoved.length);
+        if (userToBeRemoved.length > 0) {
 
-        //     let radiusResult = await radius.RemoveUser(username);
-        //     console.log(radiusResult);
-        // }
+            let radiusResult = await radius.RemoveUser(username);
+            console.log("radius deleted: ", radiusResult);
+        }
 
         let result = await db.DeleteUser(data.id);
-        console.log(result);
+        console.log("deleting user: ", result);
         if (result.affectedRows > 0) {
             res.status(200).send({ status: 'OK' });
         };

@@ -7,7 +7,7 @@ import { ApiServiceService } from './api-service.service';
 })
 export class InfoHandlerService {
 
-  info$: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  info$: BehaviorSubject<any> = new BehaviorSubject<any>('');
   CrudResponse$: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
   constructor(private crud: ApiServiceService) { }
@@ -16,15 +16,15 @@ export class InfoHandlerService {
   GetInfo() {
     this.crud.GetInfo().subscribe((data: any) => {
       next:
-      this.info$.next(data.info);
+      this.info$.next(data);
       complete:
-      console.log("Data from Handler: ", data.info);
+      console.log("Data from Handler: ", data);
     });
   }
 
-  UpdateInfo(infoText: string) {
+  UpdateInfo(infoText: string,link: string) {
     let response = '';
-    this.crud.UpdateInfo(infoText).subscribe((data: any) => {
+    this.crud.UpdateInfo(infoText,link).subscribe((data: any) => {
       next:
       response = data;
       complete:

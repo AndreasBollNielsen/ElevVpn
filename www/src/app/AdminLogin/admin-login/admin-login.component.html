@@ -16,7 +16,7 @@
                             <input formControlName="passWord" type="password" placeholder="Password">
                         </div>
                         <div class="p-1">
-                            <button type="submit" [disabled]="!loginForm.valid" class="btn btn-dark ">Logon</button>
+                            <button type="submit" [disabled]="!loginForm.valid" class="btn btn-dark ">log ind</button>
                         </div>
 
                         <div *ngIf="ErrorMsg != ''">
@@ -29,7 +29,7 @@
 
             <div *ngIf="!GetSessionData()">
                 <div class="p-1 col text-center">
-                    <button type="submit" (click)="AdminLogOut()" class="btn btn-dark ">Logout</button>
+                    <button type="submit" (click)="AdminLogOut()" class="btn btn-dark ">Log ud</button>
                 </div>
             </div>
 

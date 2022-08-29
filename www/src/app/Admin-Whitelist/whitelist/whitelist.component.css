@@ -8,3 +8,9 @@
 .line_bottom{
     border-top: 2px solid ;
 }
+
+input.checkbox-xl
+{
+    width: 20px;
+    height: 20px;
+}

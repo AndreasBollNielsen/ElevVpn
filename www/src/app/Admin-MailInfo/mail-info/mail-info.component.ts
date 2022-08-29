@@ -10,14 +10,16 @@ export class MailInfoComponent implements OnInit {
 
   infotext: string = "";
   modifiedInfoText: string = "";
+  link: string ="";
   feedbackText:string='';
   constructor(private infoHandler: InfoHandlerService) {
 
-    this.infoHandler.info$.subscribe((data:string)=>{
+    this.infoHandler.info$.subscribe((data:any)=>{
       next:
-      if(this.infotext != data)
+      if(this.infotext != data.info)
       {
-        this.infotext = data;
+        this.infotext = data.info;
+        this.link = data.link;
         console.log(this.infotext);
         this.feedbackText ='';
       }
@@ -32,7 +34,8 @@ export class MailInfoComponent implements OnInit {
 
   UpdateInfo(data: string) {
 
-    this.infoHandler.UpdateInfo(data);
+  
+    this.infoHandler.UpdateInfo(data,this.link);
 
     this.infoHandler.CrudResponse$.subscribe((response:string)=>{
       next:
