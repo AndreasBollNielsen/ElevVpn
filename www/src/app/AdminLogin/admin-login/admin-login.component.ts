@@ -34,7 +34,7 @@ export class AdminLoginComponent implements OnInit {
       }
       else
       {
-        this.ErrorMsg = 'Brugernavn eller password inkorrekt. Henvend dig til CFMN';
+        this.ErrorMsg = `Brugernavn eller password inkorrekt, du er låst ude af systemet. Vent venligst 5 minutter`;
       }
 
 

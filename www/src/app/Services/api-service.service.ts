@@ -14,7 +14,7 @@ export class ApiServiceService {
     "local": "localhost"
   };
 
-  host = this.hosts.ip;
+  host = this.hosts.local;
 
   constructor(private http: HttpClient) {
   }

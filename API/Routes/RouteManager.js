@@ -6,6 +6,8 @@ const radius = require('../DB/RadiusDB');
 const query = require('querystring');
 const security = require('../Auth/SecurityManager');
 
+const loginAttempts = [];
+
 router.get('/test', async (req, res, next) => {
 
     try {
@@ -174,86 +176,109 @@ router.delete('/RemoveUser', async (req, res) => {
 router.get('/admin/', async (req, res) => {
 
     const data = req.query;
-    console.log(security.loginAttempts);
-    let loginResult;
+    console.log("login attempts: ", loginAttempts);
+    let loginResult = [];
 
     //check if user has attempted too many times
-    const userAttempts = security.loginAttempts.filter(x => new Date(x.Time).getTime() + (1000 * 60 * 5) > new Date().getTime()).filter(x => x.Username == username);
+    const userAttempts = loginAttempts.filter(x => new Date(x.Time).getTime() + (1000 * 60 * 5) > new Date().getTime()).filter(x => x.Username == data.userName);
     // The same username tried to login more than 3 times within a timespan of 5 minutes
     if (userAttempts.length >= 3) {
         userAttempts.forEach(el => {
-            security.loginAttempts[loginAttempts.findIndex(x => x == el)].Time = new Date();
+            loginAttempts[loginAttempts.findIndex(x => x == el)].Time = new Date();
         });
 
-        res.status(403).send('Too many failed attempts');
+        loginResult = [];
+        res.json(loginResult);
+        res.status(403);
         return;
     }
 
     // Authorize
     //do my db shit.
-    if (CheckLogin(username, password)) {
-        // console.log(`Welcome back ${username}`);
+    if (checkresult = await CheckLogin(data.userName, data.passWord)) {
+
+        console.log("login result:", loginResult);
         res.json(loginResult);
-        res.status(200).send(`Welcome back ${username}`);
-        return;
+        // res.status(200).send(`Welcome back ${data.userName}`);
+        res.status(200, loginResult);
     }
     else {
         // Add to failed login attempts array
-        security.loginAttempts.push({
-            "Username": username,
+        console.log("wrong user");
+        loginAttempts.push({
+            "Username": data.userName,
             "Time": new Date()
         });
 
         // Remove old elements (if any)
-        let newArray = security.loginAttempts.filter(x => new Date(x.Time).getTime() + (1000 * 60 * 5) < new Date().getTime());
+        let newArray = loginAttempts.filter(x => new Date(x.Time).getTime() + (1000 * 60 * 5) < new Date().getTime());
 
         if (newArray.length >= 1) {
             newArray.forEach(el => {
-                security.loginAttempts.splice(security.loginAttempts.findIndex(x => x == el), 1);
+                loginAttempts.splice(loginAttempts.findIndex(x => x == el), 1);
             });
         }
 
+
         res.json(loginResult);
-        res.status(403).send('Hovsa');
+        res.status(403);
         return;
     }
 
 
 
-    function CheckLogin(username, password) {
+    async function CheckLogin(username, password) {
 
+
+        let validation;
+        let results;
         try {
 
 
-            let results = await db.checkAdminLogin(username, password);
-            console.log(results);
-            const hashedPassword = results[0].passWord;
-            const validation = await security.passwordCompare(data.passWord, hashedPassword)
-            console.log("hashed password: ", validation);
+            results = await db.checkAdminLogin(username, password);
+            if(results.length > 0)
+            {
+                const hashedPassword = results[0].passWord;
+                validation = await security.passwordCompare(data.passWord, hashedPassword);
 
-            if (validation) {
-                loginResult = results;
-                res.json(results);
-                console.log("true: ", results.length);
-                res.status(200, results);
-                return true;
             }
-            else {
-                results = [];
-                loginResult = results;
-                console.log("false: ", results.length);
-                res.json(results);
-                res.status(500, results);
+            else
+            {
                 return false;
             }
 
-
+            //console.log("hashed password: ", validation);
 
         } catch (error) {
-            console.log(error);
+            console.log("catch error: ", error);
             res.sendStatus(500);
             return false;
+
         }
+
+
+        if (validation) {
+            loginResult = results;
+            //  res.json(results);
+            console.log("true: ", loginResult.length);
+            //res.status(200, results);
+            return true;
+        }
+        else {
+            results = [];
+            loginResult = results;
+            console.log("false: ", results.length);
+            // res.json(results);
+            //res.status(500, results);
+            return false;
+        }
+
+
+
+
+
+
+
     }
 
 });

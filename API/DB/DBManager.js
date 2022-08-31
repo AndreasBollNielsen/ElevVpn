@@ -2,8 +2,8 @@ const mysql = require('mysql');
 const config = require('../DBConfig.json');
 const { json } = require('express');
 
-DBContext = config.ElevVpn;
-//DBContext = config.test;
+//DBContext = config.ElevVpn;
+DBContext = config.test;
 
 const con = mysql.createPool({
     connectionLimit: 100,
@@ -93,10 +93,10 @@ db.checkAdminLogin = async (username, password) => {
             con.query(query, [username, password], (err, results) => {
                 if (err) {
                     console.log("query not working");
-                    return reject(err);
+                    return reject("DB Error: ",err);
                 }
                 //  const rowData = JSON.stringify(results[0]);
-                //   console.log( results[0]);
+                 //  console.log("From DB: ", results);
                 // const UserValidated = security.passwordCompare(password,results[0].passWord);
                 // console.log("user validation: ", UserValidated);
                 return resolve(results[0]);

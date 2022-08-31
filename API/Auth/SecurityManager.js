@@ -2,9 +2,10 @@ const bcrypt = require('bcrypt');
 const generator = require('generate-password');
 
 //create json object that holds all the methods
+
 encryption = {};
-const loginAttempts = [];
 const salt = 10;
+
 
 encryption.Encrypt = async (password) => {
 
@@ -41,11 +42,11 @@ encryption.GeneratePassword = async () => {
 
 encryption.passwordCompare = (password, hashedPassword) => {
 
-   // console.log("password compare: " + `password plain: ${password} hashed password: ${hashedPassword}`);
+    // console.log("password compare: " + `password plain: ${password} hashed password: ${hashedPassword}`);
     return new Promise((resolve, error) => {
 
         bcrypt.compare(password, hashedPassword, (err, hash) => {
-            console.log("hasresult: ", hash);
+            console.log("checked hashresult: ", hash);
             return resolve(hash);
         })
 
@@ -54,5 +55,5 @@ encryption.passwordCompare = (password, hashedPassword) => {
 
 
 
-
 module.exports = encryption;
+//module.exports = loginAttempts;
