@@ -1,10 +1,13 @@
 const mysql = require('mysql');
+const config = require('../DBConfig.json');
+DBContext = config.Radius;
 
+console.log(DBContext);
 const con = mysql.createPool({
-    host: 'localhost',
-    user: 'radius',
-    password: 'J@neL0veMonkey$2',
-    database: 'radius',
+    host: DBContext.host,
+    user: DBContext.user,
+    password: DBContext.password,
+    database: DBContext.database,
     connectionLimit: 10
 });
 
@@ -16,7 +19,7 @@ let db = {};
 db.GetFromRadius = (userName) => {
 
     let query = "CALL GetRadiusUser(?)";
-//console.log("username: ",userName);
+console.log("username: ",userName);
     return new Promise(
         (resolve, reject) => {
             con.query(query, userName, (err, results) => {

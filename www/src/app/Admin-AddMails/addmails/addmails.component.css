@@ -2,5 +2,6 @@ textarea{
     border-style: none;
     width: 100%;
     outline: none;
+    resize: none;
 }
 

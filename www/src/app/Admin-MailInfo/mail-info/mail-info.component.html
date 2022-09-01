@@ -41,8 +41,11 @@
         <!--example box-->
         <div class="row inputContainer">
             <div class="col-md-12">Hej &lt;VPN brugernavn&gt;</div>
+            <br>
+            <br>
             <div class="col-md-12" *ngIf="modifiedInfoText ==''">{{infotext}}</div>
-            <div class="col-md-12">{{modifiedInfoText}}</div>           
+            <p class="col-md-12 ">{{modifiedInfoText}}</p>
+                
             <div class="col-md-12">Log på med &lt;VPN brugernavn&gt; og følgende kode: &lt;autogenereret kode&gt;</div>
         </div>
 
@@ -58,5 +61,5 @@
     </div>
     <div class="col-md-3"></div>
 
-
+   
 </div>

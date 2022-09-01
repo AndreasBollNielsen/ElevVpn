@@ -6,9 +6,11 @@ const radius = require('../DB/RadiusDB');
 const query = require('querystring');
 const security = require('../Auth/SecurityManager');
 
+const middlewaretest = {Boolean: true};
+
 const loginAttempts = [];
 
-router.get('/test', async (req, res, next) => {
+router.get('/test', async (req, res) => {
 
     try {
         const data = req.body;
@@ -296,7 +298,7 @@ router.patch('/admin/update', async (req, res) => {
             res.status(200).send({ "success": "password opdateret" });
         }
         else {
-            res.status(500).send("ups, brugeren forkert bruger");
+            res.status(500).send("ups, forkert bruger");
         }
 
 

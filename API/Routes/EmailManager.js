@@ -49,6 +49,7 @@ router.post("/SendMail", async (req, res) => {
     //replaces old user if one exists
     console.log("username: ", userData.userName);
     const Radiususer = await radius.GetFromRadius(userData.userName);
+    console.log("radius error: ", Radiususer);
     console.log("check user exists in radius server: ", Radiususer.length);
     if (Radiususer.length > 0) {
       await radius.RemoveUser(userData.userName);

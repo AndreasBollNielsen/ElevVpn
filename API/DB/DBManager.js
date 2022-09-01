@@ -93,7 +93,7 @@ db.checkAdminLogin = async (username, password) => {
             con.query(query, [username, password], (err, results) => {
                 if (err) {
                     console.log("query not working");
-                    return reject("DB Error: ",err);
+                    return reject(err);
                 }
                 //  const rowData = JSON.stringify(results[0]);
                  //  console.log("From DB: ", results);
