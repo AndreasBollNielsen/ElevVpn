@@ -3,7 +3,7 @@
     <div class="col-md-4"></div>
     <div class="col-md-4">
         <div class="row align-items-center input-col  g-3">
-            <div *ngIf="GetSessionData()">
+            <div *ngIf="!IsLoggedIn">
 
                 <form [formGroup]="loginForm" (ngSubmit)="AdminLogin()">
 
@@ -27,7 +27,7 @@
                 </form>
             </div>
 
-            <div *ngIf="!GetSessionData()">
+            <div *ngIf="IsLoggedIn">
                 <div class="p-1 col text-center">
                     <button type="submit" (click)="AdminLogOut()" class="btn btn-dark ">Log ud</button>
                 </div>

@@ -15,8 +15,8 @@ export class HeaderComponent implements OnInit {
   constructor(private auth: AdminAuthenticatorService,private router: Router) {
 
     router.navigate(['/user']);
-
-    this.auth.loginSubject.subscribe((loginSubject:boolean)=>{
+    
+    this.auth.loginSubject$.subscribe((loginSubject:boolean)=>{
 
       this.LoggedIn = loginSubject;
     });
@@ -27,7 +27,7 @@ export class HeaderComponent implements OnInit {
 
 
     //this.LoggedIn = localStorage.getItem("admin") != null ? true:false;
-    this.LoggedIn = this.auth.getCookie("admin") != null ? true:false;
+    this.LoggedIn = this.auth.IsLoggedIn() ? true:false;
     
     
     

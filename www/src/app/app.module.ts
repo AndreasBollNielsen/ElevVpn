@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { Routes,RouterModule } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { UserViewComponent } from './UserInput/user-view/user-view.component';
@@ -8,21 +8,22 @@ import { AdminLoginComponent } from './AdminLogin/admin-login/admin-login.compon
 import { HeaderComponent } from './Header/header/header.component';
 import { AddmailsComponent } from './Admin-AddMails/addmails/addmails.component';
 import { WhitelistComponent } from './Admin-Whitelist/whitelist/whitelist.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthGuardService } from './Services/auth-guard.service';
 import { MailInfoComponent } from './Admin-MailInfo/mail-info/mail-info.component';
 import { ChangepasswordComponent } from './Admin-ChangePassword/changepassword/changepassword.component';
+import { AuthInterceptorService } from './Services/auth-interceptor.service';
 
 
 
 const routes: Routes = [
   { path: 'user', component: UserViewComponent },
   { path: 'admin-login', component: AdminLoginComponent },
-  { path: 'admin-addmail', component: AddmailsComponent,canActivate:[AuthGuardService] },
-  { path: 'admin-whitelist', component: WhitelistComponent ,canActivate:[AuthGuardService]},
-  { path: 'admin-mailInfo', component: MailInfoComponent ,canActivate:[AuthGuardService]},
-  { path: 'admin-passwordChange', component: ChangepasswordComponent ,canActivate:[AuthGuardService]}
+  { path: 'admin-addmail', component: AddmailsComponent, canActivate: [AuthGuardService] },
+  { path: 'admin-whitelist', component: WhitelistComponent, canActivate: [AuthGuardService] },
+  { path: 'admin-mailInfo', component: MailInfoComponent, canActivate: [AuthGuardService] },
+  { path: 'admin-passwordChange', component: ChangepasswordComponent, canActivate: [AuthGuardService] }
 
 ];
 
@@ -45,8 +46,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     RouterModule.forRoot(routes)
   ],
-  exports:[RouterModule],
-  providers: [AuthGuardService],
+  exports: [RouterModule],
+  providers: [AuthGuardService, { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

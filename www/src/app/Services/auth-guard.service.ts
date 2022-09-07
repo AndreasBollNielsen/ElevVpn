@@ -12,6 +12,7 @@ export class AuthGuardService {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     const loggedin = this.authservice.authenticated;
+    console.log("auth guard: ", loggedin);
     if (loggedin) {
         // logged in so return true
        

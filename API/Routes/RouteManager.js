@@ -6,7 +6,7 @@ const radius = require('../DB/RadiusDB');
 const query = require('querystring');
 const security = require('../Auth/SecurityManager');
 
-const middlewaretest = {Boolean: true};
+
 
 const loginAttempts = [];
 
@@ -27,12 +27,12 @@ router.get('/test', async (req, res) => {
 });
 
 
-router.get('/testElev', async (req, res, next) => {
+router.get('/testElev',security.VerifyToken, async (req, res) => {
 
     try {
-        const data = req.body;
+        
+       // const data = req.body;
         let results = await db.getUsers();
-
 
         console.log("logData: ", results);
         res.json(results);
@@ -44,7 +44,7 @@ router.get('/testElev', async (req, res, next) => {
 });
 
 
-router.get('/Getusers', async (req, res, next) => {
+router.get('/Getusers',security.VerifyToken, async (req, res, next) => {
     try {
 
         let results = await db.getUsers();
@@ -59,7 +59,7 @@ router.get('/Getusers', async (req, res, next) => {
 });
 
 
-router.post('/AddUsers', async (req, res) => {
+router.post('/AddUsers',security.VerifyToken, async (req, res) => {
 
 
     try {
@@ -124,7 +124,7 @@ router.post('/AddUsers', async (req, res) => {
     }
 });
 
-router.post('/UpdateSticky', async (req, res) => {
+router.post('/UpdateSticky',security.VerifyToken, async (req, res) => {
 
     console.log("reached endpoint");
     try {
@@ -142,7 +142,7 @@ router.post('/UpdateSticky', async (req, res) => {
     }
 });
 
-router.delete('/RemoveUser', async (req, res) => {
+router.delete('/RemoveUser',security.VerifyToken, async (req, res) => {
 
     // console.log("reached endpoint delete");
     try {
@@ -200,7 +200,13 @@ router.get('/admin/', async (req, res) => {
     if (checkresult = await CheckLogin(data.userName, data.passWord)) {
 
         console.log("login result:", loginResult);
-        res.json(loginResult);
+        
+        const token = security.GenerateToken(data.userName);
+        res.json({
+            "token": token,
+            "expire": ""
+        });
+       // res.json(loginResult);
         // res.status(200).send(`Welcome back ${data.userName}`);
         res.status(200, loginResult);
     }
@@ -222,7 +228,7 @@ router.get('/admin/', async (req, res) => {
         }
 
 
-        res.json(loginResult);
+        res.json({});
         res.status(403);
         return;
     }
@@ -285,7 +291,7 @@ router.get('/admin/', async (req, res) => {
 
 });
 
-router.patch('/admin/update', async (req, res) => {
+router.patch('/admin/update',security.VerifyToken, async (req, res) => {
 
     const data = req.body;
     console.log("update password: " + `username: ${data.userName} password: ${data.passWord}`);

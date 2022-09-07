@@ -18,7 +18,6 @@ export class WhitelistComponent implements OnInit {
       next:
       if (this.Userlist !== users) {
         this.Userlist = users;
-        console.log("i am updating");
       }
     })
   }

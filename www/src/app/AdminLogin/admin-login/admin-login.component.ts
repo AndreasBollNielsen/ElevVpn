@@ -12,6 +12,7 @@ export class AdminLoginComponent implements OnInit {
   constructor(private auth: AdminAuthenticatorService, private formbuilder: FormBuilder) { }
 
   ErrorMsg: string = '';
+  IsLoggedIn:boolean = false;
 
   loginForm = this.formbuilder.group(
     {
@@ -21,19 +22,24 @@ export class AdminLoginComponent implements OnInit {
   );
 
   ngOnInit(): void {
+
+    this.IsLoggedIn = this.auth.IsLoggedIn();
+    this.auth.loginSubject$.subscribe((data)=>{
+      next:
+      this.IsLoggedIn = data;
+      console.log(this.IsLoggedIn);
+    })
   }
 
 
   AdminLogin() {
     this.ErrorMsg = '';
-    this.auth.Login(this.loginForm.value).subscribe((loginResult:Boolean) => {
+    this.auth.Login(this.loginForm.value).subscribe((loginResult: Boolean) => {
 
-      if(loginResult)
-      {
+      if (loginResult) {
         console.log("logged in");
       }
-      else
-      {
+      else {
         this.ErrorMsg = `Brugernavn eller password inkorrekt, du er låst ude af systemet. Vent venligst 5 minutter`;
       }
 
@@ -42,15 +48,13 @@ export class AdminLoginComponent implements OnInit {
 
   }
 
-  AdminLogOut()
-  {
+  AdminLogOut() {
     this.auth.Logout();
     this.ErrorMsg = '';
   }
 
-  GetSessionData(): boolean
-  {
-    return this.auth.getCookie("admin") == null ? true:false;
-    //return localStorage.getItem("admin") == null ? true:false;
-  }
+  // GetSessionData(): boolean {
+  //   console.log("calling from adminlogin");
+  //   return this.auth.IsLoggedIn() ? true : false;
+  // }
 }

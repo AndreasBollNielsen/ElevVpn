@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiServiceService } from './api-service.service';
 import { Admin } from '../Interfaces/admin';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { addHours, addMinutes, format, isBefore } from 'date-fns';
 
 @Injectable({
   providedIn: 'root'
@@ -10,12 +11,12 @@ export class AdminAuthenticatorService {
 
   adminuser: any[] = [];
   authenticated: boolean = false;
-  public loginSubject: Subject<boolean> = new Subject<boolean>();
+  public loginSubject$: Subject<boolean> = new Subject<boolean>();
   Passwordresponse$: BehaviorSubject<any> = new BehaviorSubject<any>('');
 
   constructor(private api: ApiServiceService) {
 
-    this.authenticated = this.getCookie("admin") != null ? true:false;
+    this.authenticated = this.IsLoggedIn() ? true : false;
   }
 
   Login(userData: any): Observable<boolean> {
@@ -24,89 +25,109 @@ export class AdminAuthenticatorService {
 
 
     this.api.CheckAdminLogin(userData).subscribe(data => {
-      console.log("login: ", data.length);
+      console.log("login: ", data);
       next: this.adminuser = data;
       let login: boolean = false;
-      if (this.adminuser.length > 0) {
+      if (JSON.stringify(data) !== '{}') {
         console.log("authenticated");
         this.authenticated = true;
-      //  localStorage.setItem('admin', 'loggedIn');
-        this.setCookie("admin","loggedIn",0.1);
+
+        this.setSession(data);
         login = this.authenticated;
 
       }
-      this.loginSubject.next(login);
+      this.loginSubject$.next(login);
 
 
     });
-    return this.loginSubject.asObservable();
+    return this.loginSubject$.asObservable();
   }
 
 
-UpdatePassword(userData:Admin)
-{
-  console.log("sending from handler: ",userData);
-  this.api.UpdateAdminLogin(userData).subscribe(response => {
+  UpdatePassword(userData: Admin) {
+    console.log("sending from handler: ", userData);
+    this.api.UpdateAdminLogin(userData).subscribe(response => {
 
-    console.log("password response: ", response.success);
-    this.Passwordresponse$.next(response.success);
-  },
-    error => {
-      this.Passwordresponse$.next(error.error);
-      console.log(error.error);
-    }
+      console.log("password response: ", response.success);
+      this.Passwordresponse$.next(response.success);
+    },
+      error => {
+        this.Passwordresponse$.next(error.error);
+        console.log(error.error);
+      }
 
 
-  )
-}
+    )
+  }
 
   Logout(): Observable<boolean> {
-   // localStorage.removeItem('admin');
-    this.removeCookie("admin");
+    localStorage.removeItem('token_id');
+    localStorage.removeItem('expiration');
+    //this.removeCookie("admin");
     this.authenticated = false;
-    this.loginSubject.next(false);
-    return this.loginSubject.asObservable();
+    this.loginSubject$.next(false);
+    return this.loginSubject$.asObservable();
   }
 
-  isauthenticated() {
-    const promise = new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(this.authenticated);
-      }, 800);
-    });
-    return promise;
+  IsLoggedIn() {
+    return this.GetExpiration();
+   // this.loginSubject$.next(this.GetExpiration());
+    //return this.loginSubject$.asObservable();
   }
 
-  
+  // isauthenticated() {
+  //   const promise = new Promise((resolve, reject) => {
+  //     setTimeout(() => {
+  //       resolve(this.authenticated);
+  //     }, 800);
+  //   });
+  //   return promise;
+  // }
 
-  setCookie(name: string, value: string, days: number) {
-    var expires = "";
-    if (days) {
-      var date = new Date();
-      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-      expires = "; expires=" + date.toUTCString();
-      console.log("expire: ",date);
+
+  setSession(authData: any) {
+
+    const now = new Date();
+    format(now, 'dd.MM.yyyy');
+    const expiration = addMinutes(now, 2);
+    
+    const timezone = expiration.getTimezoneOffset();
+    const extendedExpiration = addHours(expiration,timezone);
+    console.log("setting session json: ", JSON.stringify(expiration));
+    console.log("setting session timezone: ", extendedExpiration);
+    console.log("setting session real time: ", expiration.toString());
+    localStorage.setItem('token_id', authData.token);
+    localStorage.setItem('expiration', JSON.stringify(expiration));
+  }
+
+
+  GetExpiration() {
+    const expire = localStorage.getItem('expiration');
+
+     console.log("getting expiration date: ", expire);
+
+    if (expire == null) {
+      console.log("returning");
+      return false;
     }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-  }
-  getCookie(name: string) {
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    const [date, time] = expire.split('T');
+    console.log(time);
+    const expiredate = new Date(`${date} ${time}`);
+    const now = new Date();
+    format(now, 'dd.MM.yyyy');
+
+    console.log(`now ${now} expire ${expiredate}`);
+    if (isBefore(now, expiredate)) {
+      this.loginSubject$.next(true);
+      return true;
     }
-    return null;
+    else {
+      this.Logout();
+      return false;
+
+    }
+
   }
-
-  removeCookie(name:string)
-  {
-    document.cookie = name + "=;" +"expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    console.log("removing cookies");
-  }
-
-
 
 }
 
