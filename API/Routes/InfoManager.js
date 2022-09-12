@@ -5,7 +5,7 @@ const db = require('../DB/DBManager');
 const security = require("../Auth/SecurityManager");
 
 
-router.get('/GetInfo', async (req, res, next) => {
+router.get('/GetInfo',security.VerifyToken, async (req, res, next) => {
     try {
 
         let results = await db.GetInfo();
@@ -19,12 +19,12 @@ router.get('/GetInfo', async (req, res, next) => {
 });
 
 
-router.post('/UpdateInfo', async (req, res) => {
+router.post('/UpdateInfo',security.VerifyToken, async (req, res) => {
 
 
     try {
         const data = req.body;
-        console.log(data);
+       // console.log(data);
         if(data.textInfo == '')
         {
             res.sendStatus(500);

@@ -14,7 +14,7 @@ import { AuthGuardService } from './Services/auth-guard.service';
 import { MailInfoComponent } from './Admin-MailInfo/mail-info/mail-info.component';
 import { ChangepasswordComponent } from './Admin-ChangePassword/changepassword/changepassword.component';
 import { AuthInterceptorService } from './Services/auth-interceptor.service';
-
+import {CookieService} from 'ngx-cookie-service';
 
 
 const routes: Routes = [
@@ -47,7 +47,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes)
   ],
   exports: [RouterModule],
-  providers: [AuthGuardService, { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }],
+  providers: [AuthGuardService, { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true },CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

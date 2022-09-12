@@ -39,8 +39,13 @@ export class ApiServiceService {
     const username = data.userName;
     const password = data.passWord;
 
-    return this.http.get<any>(`http://${this.host}:3600/api/admin/?` + `userName=${username}&passWord=${password}`);
+    return this.http.get<any>(`http://${this.host}:3600/api/admin/?` + `userName=${username}&passWord=${password}`,{withCredentials:true});
 
+  }
+
+  VerifyExpiration()
+  {
+    return this.http.get<any>(`http://${this.host}:3600/api//admin/VerifyExpiration`);
   }
 
   UpdateAdminLogin(data: Admin) {
@@ -48,6 +53,11 @@ export class ApiServiceService {
     const userData = { "userName": data.userName, "passWord": data.passWord };
     return this.http.patch<any>(`http://${this.host}:3600/api/admin/update`, userData);
 
+  }
+
+  ClearCookie()
+  {
+    return this.http.post<any>(`http://${this.host}:3600/api/admin/LogOut`,{});
   }
 
   DeleteUser(user: any) {

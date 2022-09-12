@@ -72,8 +72,8 @@ encryption.GenerateToken = (userName) => {
     console.log("payload: ", payload);
     let signOptions = {
         algorithm: "HS512",
-        expiresIn: "45s"
-    }
+        expiresIn: `${process.env.EXPIRE_TIME}s`
+    };
     // const token = jwt.sign(userName, process.env.TOKEN_PRIVATE_KEY, { algorithm: "RS512" }, { expiresIn: expiration});
     const token = jwt.sign(payload, process.env.TOKEN_PRIVATE_KEY, signOptions);
     return token;
@@ -81,22 +81,14 @@ encryption.GenerateToken = (userName) => {
 
 encryption.VerifyToken = (req, res, next) => {
 
-
-    const header = req.headers['authorization'];
-    const token = header.split(' ')[1];
+    const token = req.cookies.token || '';
+   // console.log("req: ", token);
+  //  const header = req.headers['authorization'];
+  //  const token = header.split(' ')[1];
     //  console.log("token: ", token);
 
 
-    //check expire status
-    var decodedToken = jwt.decode(token, { complete: true });
-    //  console.log("header: ", decodedToken.header);
-    //console.log("payload: ", decodedToken.payload);
-    const expire = decodedToken.payload.exp;
-    const now = (Date.now() / 1000 + 30);
-    console.log(`expire: ${expire} now: ${now}`);
-    if (expire < now) {
-        console.log("almost expired");
-    }
+
 
     try {
 
@@ -107,7 +99,7 @@ encryption.VerifyToken = (req, res, next) => {
 
         if (error instanceof jwt.TokenExpiredError) {
             console.log(error);
-            return status(401).send('token expired');
+            return status(401);
         }
         else if (error instanceof jwt.JsonWebTokenError) {
             return res.status(401).send('bruger ikke autoriseret');
@@ -117,6 +109,22 @@ encryption.VerifyToken = (req, res, next) => {
         return res.status(400).send('bad request');
     }
 
+}
+
+encryption.VerifyExpiration = (token) => {
+   // const token = header.split(' ')[1];
+
+    //check expire status
+    var decodedToken = jwt.decode(token, { complete: true });
+    //  console.log("header: ", decodedToken.header);
+    //console.log("payload: ", decodedToken.payload);
+    const expire = decodedToken.payload.exp;
+    const now = (Date.now() / 1000);
+    console.log(`expire: ${expire} now: ${now}`);
+    if (expire < now) {
+        return false;
+    }
+    return true;
 }
 
 module.exports = encryption;

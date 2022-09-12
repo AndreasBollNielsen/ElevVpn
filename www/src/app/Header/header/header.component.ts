@@ -27,7 +27,7 @@ export class HeaderComponent implements OnInit {
 
 
     //this.LoggedIn = localStorage.getItem("admin") != null ? true:false;
-    this.LoggedIn = this.auth.IsLoggedIn() ? true:false;
+    //this.LoggedIn = this.auth.IsLoggedIn() ? true:false;
     
     
     

@@ -13,6 +13,7 @@ export class AdminLoginComponent implements OnInit {
 
   ErrorMsg: string = '';
   IsLoggedIn:boolean = false;
+  IsForcedLogOut:boolean = false;
 
   loginForm = this.formbuilder.group(
     {
@@ -23,11 +24,16 @@ export class AdminLoginComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.IsLoggedIn = this.auth.IsLoggedIn();
+    this.ErrorMsg = "";
+
     this.auth.loginSubject$.subscribe((data)=>{
       next:
       this.IsLoggedIn = data;
-      console.log(this.IsLoggedIn);
+    })
+
+    this.auth.ForcedLogout$.subscribe((msg) =>{
+      next:
+      this.ErrorMsg = msg;
     })
   }
 
@@ -53,8 +59,5 @@ export class AdminLoginComponent implements OnInit {
     this.ErrorMsg = '';
   }
 
-  // GetSessionData(): boolean {
-  //   console.log("calling from adminlogin");
-  //   return this.auth.IsLoggedIn() ? true : false;
-  // }
+  
 }

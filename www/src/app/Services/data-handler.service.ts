@@ -44,7 +44,7 @@ export class DataHandlerService {
       tempUsers = data;
       complete:
       this.users$.next(this.PopulateList(tempUsers));
-      console.log(this.users$);
+     // console.log(this.users$);
     });
   }
 

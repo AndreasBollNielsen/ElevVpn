@@ -27,11 +27,11 @@ router.get('/test', async (req, res) => {
 });
 
 
-router.get('/testElev',security.VerifyToken, async (req, res) => {
+router.get('/testElev', security.VerifyToken, async (req, res) => {
 
     try {
-        
-       // const data = req.body;
+
+        // const data = req.body;
         let results = await db.getUsers();
 
         console.log("logData: ", results);
@@ -44,7 +44,12 @@ router.get('/testElev',security.VerifyToken, async (req, res) => {
 });
 
 
-router.get('/Getusers',security.VerifyToken, async (req, res, next) => {
+router.get('/Getusers', security.VerifyToken, async (req, res, next) => {
+
+    // const header = req.headers['authorization'];
+    // const token = header.split(' ')[1];
+    //   console.log("token: ", token);
+
     try {
 
         let results = await db.getUsers();
@@ -59,7 +64,7 @@ router.get('/Getusers',security.VerifyToken, async (req, res, next) => {
 });
 
 
-router.post('/AddUsers',security.VerifyToken, async (req, res) => {
+router.post('/AddUsers', security.VerifyToken, async (req, res) => {
 
 
     try {
@@ -124,7 +129,7 @@ router.post('/AddUsers',security.VerifyToken, async (req, res) => {
     }
 });
 
-router.post('/UpdateSticky',security.VerifyToken, async (req, res) => {
+router.post('/UpdateSticky', security.VerifyToken, async (req, res) => {
 
     console.log("reached endpoint");
     try {
@@ -142,7 +147,7 @@ router.post('/UpdateSticky',security.VerifyToken, async (req, res) => {
     }
 });
 
-router.delete('/RemoveUser',security.VerifyToken, async (req, res) => {
+router.delete('/RemoveUser', security.VerifyToken, async (req, res) => {
 
     // console.log("reached endpoint delete");
     try {
@@ -151,7 +156,7 @@ router.delete('/RemoveUser',security.VerifyToken, async (req, res) => {
         let splittedData = data.email.split('@');
         let username = splittedData[0];
 
-        // console.log("user name: ", username);
+      
         let userToBeRemoved = await radius.GetFromRadius(username);
 
         console.log("deleting from radius: ", userToBeRemoved.length);
@@ -174,6 +179,17 @@ router.delete('/RemoveUser',security.VerifyToken, async (req, res) => {
         res.sendStatus(500);
     }
 });
+
+router.get('/admin/VerifyExpiration', security.VerifyToken, (req, res) => {
+
+    
+    const token = req.cookies.token || '';
+    const result = security.VerifyExpiration(token);
+  
+    res.json({ "verified": result });
+
+
+})
 
 router.get('/admin/', async (req, res) => {
 
@@ -200,13 +216,19 @@ router.get('/admin/', async (req, res) => {
     if (checkresult = await CheckLogin(data.userName, data.passWord)) {
 
         console.log("login result:", loginResult);
-        
+
         const token = security.GenerateToken(data.userName);
+        // console.log(`cookie: ${res.cookie} json: ${res.json()}`);
+        res.cookie
+            ('token', token, { expires: new Date(Date.now() + (process.env.EXPIRE_TIME * 1000)), secure: true, httpOnly: true });
+
+
         res.json({
             "token": token,
             "expire": ""
         });
-       // res.json(loginResult);
+
+        // res.json(loginResult);
         // res.status(200).send(`Welcome back ${data.userName}`);
         res.status(200, loginResult);
     }
@@ -244,14 +266,12 @@ router.get('/admin/', async (req, res) => {
 
 
             results = await db.checkAdminLogin(username, password);
-            if(results.length > 0)
-            {
+            if (results.length > 0) {
                 const hashedPassword = results[0].passWord;
                 validation = await security.passwordCompare(data.passWord, hashedPassword);
 
             }
-            else
-            {
+            else {
                 return false;
             }
 
@@ -291,7 +311,7 @@ router.get('/admin/', async (req, res) => {
 
 });
 
-router.patch('/admin/update',security.VerifyToken, async (req, res) => {
+router.patch('/admin/update', security.VerifyToken, async (req, res) => {
 
     const data = req.body;
     console.log("update password: " + `username: ${data.userName} password: ${data.passWord}`);
@@ -313,5 +333,13 @@ router.patch('/admin/update',security.VerifyToken, async (req, res) => {
         res.sendStatus(500).send("hovsa forbindelsen røg");
     }
 });
+
+router.post('/admin/LogOut',security.VerifyToken,(req,res) => {
+    
+    const token = req.cookies || '';
+    console.log("clearing token: ",token);
+    res.cookie('token',{maxAge: -1});
+    res.end();
+})
 
 module.exports = router;

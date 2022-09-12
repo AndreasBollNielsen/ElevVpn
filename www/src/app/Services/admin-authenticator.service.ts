@@ -3,6 +3,8 @@ import { ApiServiceService } from './api-service.service';
 import { Admin } from '../Interfaces/admin';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { addHours, addMinutes, format, isBefore } from 'date-fns';
+import { CookieService } from 'ngx-cookie-service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +13,14 @@ export class AdminAuthenticatorService {
 
   adminuser: any[] = [];
   authenticated: boolean = false;
+  hasBeenLoggedIn: boolean =false;
   public loginSubject$: Subject<boolean> = new Subject<boolean>();
+  public ForcedLogout$: Subject<string> = new Subject<string>();
   Passwordresponse$: BehaviorSubject<any> = new BehaviorSubject<any>('');
 
-  constructor(private api: ApiServiceService) {
+  constructor(private api: ApiServiceService, private cookieService: CookieService, private route: Router) {
 
-    this.authenticated = this.IsLoggedIn() ? true : false;
+    // this.authenticated = this.IsLoggedIn() ? true : false;
   }
 
   Login(userData: any): Observable<boolean> {
@@ -31,8 +35,7 @@ export class AdminAuthenticatorService {
       if (JSON.stringify(data) !== '{}') {
         console.log("authenticated");
         this.authenticated = true;
-
-        this.setSession(data);
+        // this.setSession(data);
         login = this.authenticated;
 
       }
@@ -61,71 +64,59 @@ export class AdminAuthenticatorService {
   }
 
   Logout(): Observable<boolean> {
-    localStorage.removeItem('token_id');
-    localStorage.removeItem('expiration');
+   
+    this.api.ClearCookie().subscribe((data)=>{
+      next:
+      console.log("logging out: ", data);
+    })
     //this.removeCookie("admin");
     this.authenticated = false;
+    this.hasBeenLoggedIn = true;
     this.loginSubject$.next(false);
     return this.loginSubject$.asObservable();
   }
 
+  ForceLogout() {
+    console.log("forced logout");
+    this.cookieService.deleteAll();
+    this.authenticated = false;
+    this.loginSubject$.next(false);
+    this.ForcedLogout$.next("Session udløbet...");
+    this.route.navigateByUrl("admin-login");
+    return this.loginSubject$.asObservable();
+  }
+
   IsLoggedIn() {
-    return this.GetExpiration();
-   // this.loginSubject$.next(this.GetExpiration());
-    //return this.loginSubject$.asObservable();
-  }
 
-  // isauthenticated() {
-  //   const promise = new Promise((resolve, reject) => {
-  //     setTimeout(() => {
-  //       resolve(this.authenticated);
-  //     }, 800);
-  //   });
-  //   return promise;
-  // }
-
-
-  setSession(authData: any) {
-
-    const now = new Date();
-    format(now, 'dd.MM.yyyy');
-    const expiration = addMinutes(now, 2);
+    if(!this.hasBeenLoggedIn)
+    {
+      return this.GetExpiration();
+    }
+    return false;
     
-    const timezone = expiration.getTimezoneOffset();
-    const extendedExpiration = addHours(expiration,timezone);
-    console.log("setting session json: ", JSON.stringify(expiration));
-    console.log("setting session timezone: ", extendedExpiration);
-    console.log("setting session real time: ", expiration.toString());
-    localStorage.setItem('token_id', authData.token);
-    localStorage.setItem('expiration', JSON.stringify(expiration));
   }
 
-
+  
   GetExpiration() {
-    const expire = localStorage.getItem('expiration');
+    let verification = false;
+    this.api.VerifyExpiration().subscribe((data: any) => {
 
-     console.log("getting expiration date: ", expire);
+      complete:
+      if (data.verified) {
+        console.log("expiraton: ", data.verified);
+        verification = data.verified;
+        this.authenticated = true;
+        this.loginSubject$.next(true);
 
-    if (expire == null) {
-      console.log("returning");
-      return false;
-    }
-    const [date, time] = expire.split('T');
-    console.log(time);
-    const expiredate = new Date(`${date} ${time}`);
-    const now = new Date();
-    format(now, 'dd.MM.yyyy');
+      }
+      else {
+        this.Logout();
+        verification = false;
 
-    console.log(`now ${now} expire ${expiredate}`);
-    if (isBefore(now, expiredate)) {
-      this.loginSubject$.next(true);
-      return true;
-    }
-    else {
-      this.Logout();
-      return false;
+      }
+    })
 
-    }
+    return true;
 
   }
 

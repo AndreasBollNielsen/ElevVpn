@@ -14,6 +14,7 @@ export class WhitelistComponent implements OnInit {
 
   constructor(private api: ApiServiceService, private handlerService: DataHandlerService) {
 
+    this.Userlist = [];
     this.handlerService.users$.subscribe((users: User[]) => {
       next:
       if (this.Userlist !== users) {

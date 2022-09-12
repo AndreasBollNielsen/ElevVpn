@@ -1,22 +1,27 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
+import { AdminAuthenticatorService } from './admin-authenticator.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthInterceptorService implements HttpInterceptor {
 
+  constructor(private auth: AdminAuthenticatorService) {
+
+  }
+
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const token = localStorage.getItem("token_id");
-    console.log(token);
-    if (token) {
-      const clonedHTTPRequest = req.clone({ headers: req.headers.set("Authorization", "Bearer " + token) });
-      return next.handle(clonedHTTPRequest);
-    }
-    else
-    {
-      return next.handle(req);
-    }
+
+    const clonedHTTPRequest = req.clone({ withCredentials: true });
+
+    return next.handle(clonedHTTPRequest).pipe(catchError(error => {
+
+      console.log(error);
+      this.auth.ForceLogout();
+      return of();
+    }));
+
   }
 }
