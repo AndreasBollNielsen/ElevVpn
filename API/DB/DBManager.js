@@ -206,13 +206,13 @@ db.GetInfo = () => {
 
 
 //Update Info mail from database
-db.UpdateInfo = (infoText,link) => {
+db.UpdateInfo = (infoText) => {
 
-    let query = 'CALL updateInfo(?,?)';
+    let query = 'CALL updateInfo(?)';
     console.log(infoText);
     return new Promise(
         (resolve, reject) => {
-            con.query(query, [infoText,link], (err, results) => {
+            con.query(query, [infoText], (err, results) => {
                 if (err) {
                     console.log("query not working");
                     return reject(err);

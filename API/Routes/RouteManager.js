@@ -27,7 +27,7 @@ router.get('/test', async (req, res) => {
 });
 
 
-router.get('/testElev', security.VerifyToken, async (req, res) => {
+router.get('/testElev', async (req, res) => {
 
     try {
 
@@ -220,7 +220,7 @@ router.get('/admin/', async (req, res) => {
         const token = security.GenerateToken(data.userName);
         // console.log(`cookie: ${res.cookie} json: ${res.json()}`);
         res.cookie
-            ('token', token, { expires: new Date(Date.now() + (process.env.EXPIRE_TIME * 1000)), secure: true, httpOnly: true });
+            ('token', token, { expires: new Date(Date.now() + (process.env.EXPIRE_TIME * 1000)), secure: true, httpOnly: true,sameSite:'lax'});
 
 
         res.json({

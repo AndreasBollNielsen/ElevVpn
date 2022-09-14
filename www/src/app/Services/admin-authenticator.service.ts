@@ -3,7 +3,6 @@ import { ApiServiceService } from './api-service.service';
 import { Admin } from '../Interfaces/admin';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { addHours, addMinutes, format, isBefore } from 'date-fns';
-import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -18,7 +17,7 @@ export class AdminAuthenticatorService {
   public ForcedLogout$: Subject<string> = new Subject<string>();
   Passwordresponse$: BehaviorSubject<any> = new BehaviorSubject<any>('');
 
-  constructor(private api: ApiServiceService, private cookieService: CookieService, private route: Router) {
+  constructor(private api: ApiServiceService, private route: Router) {
 
     // this.authenticated = this.IsLoggedIn() ? true : false;
   }
@@ -78,7 +77,6 @@ export class AdminAuthenticatorService {
 
   ForceLogout() {
     console.log("forced logout");
-    this.cookieService.deleteAll();
     this.authenticated = false;
     this.loginSubject$.next(false);
     this.ForcedLogout$.next("Session udløbet...");
