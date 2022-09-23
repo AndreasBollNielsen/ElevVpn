@@ -10,7 +10,7 @@ export class AuthGuardService {
 
   constructor(private router: Router, private authservice: AdminAuthenticatorService) { }
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  canActivate( state: RouterStateSnapshot) {
     const loggedin = this.authservice.authenticated;
     console.log("auth guard: ", loggedin);
     if (loggedin) {

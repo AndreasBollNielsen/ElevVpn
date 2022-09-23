@@ -2,8 +2,8 @@ const mysql = require('mysql');
 const config = require('../DBConfig.json');
 const { json } = require('express');
 
-//DBContext = config.ElevVpn;
-DBContext = config.test;
+DBContext = config.ElevVpn;
+//DBContext = config.test;
 
 const con = mysql.createPool({
     connectionLimit: 100,

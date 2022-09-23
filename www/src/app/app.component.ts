@@ -13,9 +13,14 @@ export class AppComponent {
   constructor(private router: Router, private auth: AdminAuthenticatorService) {
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationStart) {
+
         console.log("route changed: ", event.url);
-        if(event.url != "/user" && auth.authenticated)
-        {
+        // if (!auth.checkedLogin) {
+
+        //   auth.checkedLogin = true;
+        // }
+        if (event.url != "/user") {
+          console.log('checking login');
           auth.IsLoggedIn();
         }
       }

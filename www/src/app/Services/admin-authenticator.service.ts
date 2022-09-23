@@ -13,6 +13,7 @@ export class AdminAuthenticatorService {
   adminuser: any[] = [];
   authenticated: boolean = false;
   hasBeenLoggedIn: boolean =false;
+  checkedLogin: boolean = false;
   public loginSubject$: Subject<boolean> = new Subject<boolean>();
   public ForcedLogout$: Subject<string> = new Subject<string>();
   Passwordresponse$: BehaviorSubject<any> = new BehaviorSubject<any>('');
@@ -29,7 +30,7 @@ export class AdminAuthenticatorService {
 
     this.api.CheckAdminLogin(userData).subscribe(data => {
       console.log("login: ", data);
-      next: this.adminuser = data;
+     // next: this.adminuser = data;
       let login: boolean = false;
       if (JSON.stringify(data) !== '{}') {
         console.log("authenticated");

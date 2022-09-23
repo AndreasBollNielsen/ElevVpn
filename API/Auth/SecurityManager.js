@@ -85,7 +85,7 @@ encryption.VerifyToken = (req, res, next) => {
    // console.log("req: ", token);
   //  const header = req.headers['authorization'];
   //  const token = header.split(' ')[1];
-    //  console.log("token: ", token);
+      console.log("token_security: ", req);
 
 
 
@@ -98,14 +98,15 @@ encryption.VerifyToken = (req, res, next) => {
     } catch (error) {
 
         if (error instanceof jwt.TokenExpiredError) {
-            console.log(error);
-            return status(401);
+            console.log("token expired: ",error);
+            return res.status(401);
         }
         else if (error instanceof jwt.JsonWebTokenError) {
+            console.log("token unauthorized: ",error);
             return res.status(401).send('bruger ikke autoriseret');
         }
 
-
+       console.log("bad request: ", error);
         return res.status(400).send('bad request');
     }
 

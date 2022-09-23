@@ -8,29 +8,45 @@ const apiEmail = require('./Routes/EmailManager');
 const cookieparser = require('cookie-parser');
 const app = express();
 const cors = require('cors');
+const { options } = require('./Routes/InfoManager');
 const port = 3600;
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieparser());
 //app.use(cors());
 app.use(cors({
-    origin: ['htts://localhost:4200','htts://172.18.150.51:3600','htts://172.18.150.51'],
-    //origin: 'any',
-    credentials: true
-  }));
-app.use('/api',apiRouter);
-app.use('/api/email',apiEmail);
-app.use('/api/info',apiInfo);
+  origin: ['https://localhost:4200','http://localhost:4200','https://elevvpn.zbc.dk','https://localhost','http://172.18.150.51','https://172.18.150.51'],
+  //origin: 'any',
+  credentials: true
+}));
 
-//'http://localhost:3600'
 
-const ssloptions ={
-  Key: fs.readFileSync(path.join(__dirname,'./cert/key.pem')),
-  cert:fs.readFileSync(path.join(__dirname,'./cert/cert.pem'))
+
+app.use('/api', apiRouter);
+app.use('/api/email', apiEmail);
+app.use('/api/info', apiInfo);
+
+
+app.use("/", express.static("public"));
+
+app.get('/hello', (req, res) => {
+  res.send("hello world");
+})
+
+//-----------------------SSl not in use-------------------------------------------
+// const ssloptions = {
+//   cert: fs.readFileSync('/etc/pki/tls/certs/cert.pem',"utf-8"),
+//   Key: fs.readFileSync('/etc/pki/tls/certs/key.pem',"utf-8")
+// }
+
+const ssloptions = {
+  cert: fs.readFileSync('/etc/pki/tls/certs/172.18.150.51.crt',"utf-8"),
+  Key: fs.readFileSync('/etc/pki/tls/certs/172.18.150.51.key',"utf-8")
 }
-
-const sslServere = https.createServer(ssloptions,app);
+console.log(ssloptions.cert);
+const sslServere = https.createServer(options, app);
 
 //output port listener
-sslServere.listen(port, () =>{console.log(`port is listening ${port}` )} );
+sslServere.listen(port, () => { console.log(`port is listening ${port}`) });
+

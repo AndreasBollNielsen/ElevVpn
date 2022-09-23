@@ -14,13 +14,17 @@ export class AuthInterceptorService implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
+    if(!this.auth.authenticated)
+    {
+     // return next.handle(req);
+    }
     
     const clonedHTTPRequest = req.clone({ withCredentials: true });
-
     console.log("http interceptor");
+    console.log(clonedHTTPRequest);
       return next.handle(clonedHTTPRequest).pipe(catchError(error => {
 
-        console.log(error);
+        console.log("interceptor error: ",error);
         this.auth.ForceLogout();
         return of();
       }));

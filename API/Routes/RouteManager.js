@@ -27,6 +27,21 @@ router.get('/test', async (req, res) => {
 });
 
 
+router.get('/loginTest', async (req, res) => {
+
+    console.log('test');
+    let results = await db.getUsers();
+    // res.setHeader('Set-Cookie','isloggedIn=true; SameSite=None; Secure');
+    // res.setHeader('Access-Control-Allow-Credentials',true);
+    //  res.setHeader('Access-Control-Allow-Headers','Origin, X-Requested-With, Content-Type, Accept');
+    //   res.setHeader('Access-Control-Allow-Origin','https://localhost:4200');
+    res.cookie("mytest", 'test', { expires: new Date(Date.now() + 16000), secure: true, httpOnly: true, sameSite: 'none' }, path = '/');
+    res.json(results);
+
+
+
+})
+
 router.get('/testElev', async (req, res) => {
 
     try {
@@ -156,7 +171,7 @@ router.delete('/RemoveUser', security.VerifyToken, async (req, res) => {
         let splittedData = data.email.split('@');
         let username = splittedData[0];
 
-      
+
         let userToBeRemoved = await radius.GetFromRadius(username);
 
         console.log("deleting from radius: ", userToBeRemoved.length);
@@ -182,10 +197,10 @@ router.delete('/RemoveUser', security.VerifyToken, async (req, res) => {
 
 router.get('/admin/VerifyExpiration', security.VerifyToken, (req, res) => {
 
-    
+    res.set('Access-Control-Allow-Origin', 'https://172.18.150.51');
     const token = req.cookies.token || '';
     const result = security.VerifyExpiration(token);
-  
+
     res.json({ "verified": result });
 
 
@@ -193,6 +208,9 @@ router.get('/admin/VerifyExpiration', security.VerifyToken, (req, res) => {
 
 router.get('/admin/', async (req, res) => {
 
+    //   res.set('Access-Control-Allow-Origin','http://localhost:4200');
+   // res.set('Access-Control-Allow-Origin', 'http://localhost:3600/api/admin/VerifyExpiration');
+   // res.set('Access-Control-Allow-Origin', 'https://172.18.150.51:3600');
     const data = req.query;
     console.log("login attempts: ", loginAttempts);
     let loginResult = [];
@@ -219,18 +237,24 @@ router.get('/admin/', async (req, res) => {
 
         const token = security.GenerateToken(data.userName);
         // console.log(`cookie: ${res.cookie} json: ${res.json()}`);
-        res.cookie
-            ('token', token, { expires: new Date(Date.now() + (process.env.EXPIRE_TIME * 1000)), secure: true, httpOnly: true,sameSite:'lax'});
-
-
-        res.json({
-            "token": token,
-            "expire": ""
-        });
+        res.cookie('token', 
+        token,
+        { expires: new Date(Date.now() + (process.env.EXPIRE_TIME * 1000)), 
+        secure: false, 
+        httpOnly: true, 
+        sameSite:'none' });
+      //  res.setHeader('Set-Cookie', 'visited=true; Max-Age=3000; HttpOnly, Secure');
+      //  res.cookie("mytest", 'test', { expires: new Date(Date.now() + 90000), httpOnly: true, secure: true,sameSite: 'none' });
+        res.status(200).send({ "token": token });
+        // res.send('');
+        // res.json({
+        //     "token": token,
+        //     "expire": ""
+        // });
 
         // res.json(loginResult);
         // res.status(200).send(`Welcome back ${data.userName}`);
-        res.status(200, loginResult);
+        // res.status(200, loginResult);
     }
     else {
         // Add to failed login attempts array
@@ -334,11 +358,11 @@ router.patch('/admin/update', security.VerifyToken, async (req, res) => {
     }
 });
 
-router.post('/admin/LogOut',security.VerifyToken,(req,res) => {
-    
+router.post('/admin/LogOut', security.VerifyToken, (req, res) => {
+
     const token = req.cookies || '';
-    console.log("clearing token: ",token);
-    res.cookie('token',{maxAge: -1});
+    console.log("clearing token: ", token);
+    res.cookie('token', { maxAge: -1 });
     res.end();
 })
 
