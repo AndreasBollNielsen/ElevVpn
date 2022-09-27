@@ -66,11 +66,6 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "ssl": true,
-            "sslKey": "/etc/pki/tls/certs/172.18.150.51.key",
-            "sslCert": "/etc/pki/tls/certs/172.18.150.51.crt"
-          },
           "configurations": {
             "production": {
               "browserTarget": "www:build:production"

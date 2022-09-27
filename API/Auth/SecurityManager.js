@@ -66,7 +66,7 @@ encryption.passwordCompare = (password, hashedPassword) => {
 
 encryption.GenerateToken = (userName) => {
 
-    const sessionId = Math.floor(Math.random() * 100);
+    const sessionId = Math.floor(Math.random() * 10000000000) + 1000000;
 
     const payload = { "username": userName, "sessionId": sessionId };
     console.log("payload: ", payload);
@@ -82,12 +82,7 @@ encryption.GenerateToken = (userName) => {
 encryption.VerifyToken = (req, res, next) => {
 
     const token = req.cookies.token || '';
-   // console.log("req: ", token);
-  //  const header = req.headers['authorization'];
-  //  const token = header.split(' ')[1];
-      console.log("token_security: ", req);
-
-
+   // console.log("token_security: ", req);
 
 
     try {
@@ -98,27 +93,26 @@ encryption.VerifyToken = (req, res, next) => {
     } catch (error) {
 
         if (error instanceof jwt.TokenExpiredError) {
-            console.log("token expired: ",error);
+            console.log("token expired: ", error);
             return res.status(401);
         }
         else if (error instanceof jwt.JsonWebTokenError) {
-            console.log("token unauthorized: ",error);
+            console.log("token unauthorized: ", error);
             return res.status(401).send('bruger ikke autoriseret');
         }
 
-       console.log("bad request: ", error);
+        console.log("bad request: ", error);
         return res.status(400).send('bad request');
     }
 
 }
 
 encryption.VerifyExpiration = (token) => {
-   // const token = header.split(' ')[1];
+   
 
     //check expire status
     var decodedToken = jwt.decode(token, { complete: true });
-    //  console.log("header: ", decodedToken.header);
-    //console.log("payload: ", decodedToken.payload);
+   
     const expire = decodedToken.payload.exp;
     const now = (Date.now() / 1000);
     console.log(`expire: ${expire} now: ${now}`);
@@ -129,4 +123,3 @@ encryption.VerifyExpiration = (token) => {
 }
 
 module.exports = encryption;
-//  module.exports = expiration;

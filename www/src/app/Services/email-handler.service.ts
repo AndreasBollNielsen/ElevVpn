@@ -16,17 +16,15 @@ export class EmailHandlerService {
   SendEmail(email: string) {
     console.log("sending mail from handler: ", email);
 
-    // console.log(this.crud.GetUserData());
     this.crud.SendEmail(email).subscribe(response => {
 
-      console.log("email response: ", response.info);
+      console.log("email response: ", response);
       this.response$.next(response.info);
     },
       error => {
+        
         this.response$.next(error.error);
       }
-
-
     )
   }
 }

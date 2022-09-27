@@ -2,6 +2,7 @@ const mysql = require('mysql');
 const config = require('../DBConfig.json');
 DBContext = config.Radius;
 
+//create connection to DB
 console.log(DBContext);
 const con = mysql.createPool({
     host: DBContext.host,
@@ -15,11 +16,11 @@ const con = mysql.createPool({
 let db = {};
 
 
-
+// get user from Radius DB
 db.GetFromRadius = (userName) => {
 
     let query = "CALL GetRadiusUser(?)";
-console.log("username: ",userName);
+//console.log("username: ",userName);
     return new Promise(
         (resolve, reject) => {
             con.query(query, userName, (err, results) => {
@@ -34,7 +35,7 @@ console.log("username: ",userName);
     );
 };
 
-
+// Add user to Radius DB
 db.AddUser = (username, password) => {
 
     console.log("username: ", username);
@@ -55,6 +56,7 @@ db.AddUser = (username, password) => {
     );
 };
 
+//Remove user from Radius DB
 db.RemoveUser = (username) => {
 
    // console.log("username: ", username);

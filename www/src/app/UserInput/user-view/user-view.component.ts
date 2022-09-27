@@ -41,6 +41,7 @@ export class UserViewComponent implements OnInit {
       {
         this.mailResponse = response;
       }
+      
     })
     //this.api.SendEmail();
   }

@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { AdminAuthenticatorService } from './admin-authenticator.service';
 
 @Injectable({
@@ -20,13 +20,20 @@ export class AuthInterceptorService implements HttpInterceptor {
     }
     
     const clonedHTTPRequest = req.clone({ withCredentials: true });
-    console.log("http interceptor");
-    console.log(clonedHTTPRequest);
+  
       return next.handle(clonedHTTPRequest).pipe(catchError(error => {
 
-        console.log("interceptor error: ",error);
-        this.auth.ForceLogout();
-        return of();
+        console.log("interceptor error: ",error.error);
+        
+        //force logout if status 401
+        if(error.status === 401)
+        {
+          this.auth.ForceLogout();
+
+        }
+       
+        //return error
+        return throwError(error);
       }));
 
   }

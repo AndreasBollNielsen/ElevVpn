@@ -4,7 +4,7 @@ const router = express.Router();
 const db = require('../DB/DBManager');
 const security = require("../Auth/SecurityManager");
 
-
+// get info text for email
 router.get('/GetInfo',security.VerifyToken, async (req, res, next) => {
     try {
 
@@ -18,7 +18,7 @@ router.get('/GetInfo',security.VerifyToken, async (req, res, next) => {
     }
 });
 
-
+// update info text
 router.post('/UpdateInfo',security.VerifyToken, async (req, res) => {
 
 

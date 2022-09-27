@@ -19,9 +19,11 @@ export class AppComponent {
 
         //   auth.checkedLogin = true;
         // }
+        console.log('checking login');
+        auth.IsLoggedIn();
+
         if (event.url != "/user") {
-          console.log('checking login');
-          auth.IsLoggedIn();
+         
         }
       }
     })

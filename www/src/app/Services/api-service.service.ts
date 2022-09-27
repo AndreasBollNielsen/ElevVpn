@@ -3,21 +3,17 @@ import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { User } from '../Interfaces/user';
 import { Admin } from '../Interfaces/admin';
-import {ip,localhost} from '../../assets/Config.json';
+import config from '../../assets/Config.json';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class ApiServiceService {
+ 
+  host = config.local;
+  
 
-  hosts = {
-    "ip": "https://172.18.150.51/api/",
-    "local": "http://localhost:3600/api/",
-    'localip': 'https://127.0.0.1:3600/api/'
-  };
-
-   host = this.hosts.localip;
- // host2 = localhost;
   constructor(private http: HttpClient) {
   }
 
@@ -41,8 +37,8 @@ export class ApiServiceService {
     const username = data.userName;
     const password = data.passWord;
     
-   // return this.http.get<any>(`${this.host}admin/?` + `userName=${username}&passWord=${password}`, { withCredentials: true });
-    return this.http.get<any>(`${this.host}loginTest`,{withCredentials:true});
+    return this.http.get<any>(`${this.host}admin/?` + `userName=${username}&passWord=${password}`, { withCredentials: true });
+   // return this.http.get<any>(`${this.host}loginTest`,{withCredentials:true});
    
   }
 

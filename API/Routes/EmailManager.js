@@ -34,7 +34,7 @@ router.post("/SendMail", async (req, res) => {
 
   let data = req.body
   const userData = SplitMail(req.body.email);
- // console.log(userData);
+ 
 
   //1 check if email exists in whitelist & update vpn status
   const dbResult = await db.UpdateVPN(userData.email);
@@ -45,17 +45,25 @@ router.post("/SendMail", async (req, res) => {
     const passwords = await security.GeneratePassword();
     console.log("password: ", passwords.hashed);
 
+    
     //3 add new user to radius with secure password
     //replaces old user if one exists
-    console.log("username: ", userData.userName);
-    const Radiususer = await radius.GetFromRadius(userData.userName);
-    console.log("radius error: ", Radiususer);
-    console.log("check user exists in radius server: ", Radiususer.length);
-    if (Radiususer.length > 0) {
-      await radius.RemoveUser(userData.userName);
+    try {
+      const Radiususer = await radius.GetFromRadius(userData.userName);
+     
+      if (Radiususer.length > 0) {
+        await radius.RemoveUser(userData.userName);
+      }
+      const radiusResult = await radius.AddUser(userData.userName, passwords.hashed);
+      console.log("radius feedback: ", radiusResult);
+      
+    } catch (error) {
+      console.log("radius error: ", error);
+      res.status(500).send('Servicen er ikke tilgængelig...');
+      return;
     }
-    const radiusResult = await radius.AddUser(userData.userName, passwords.hashed);
-    console.log("radius feedback: ", radiusResult);
+    
+    
 
     //4 get email info from db
     const infoResult = await db.GetInfo();
@@ -80,7 +88,7 @@ router.post("/SendMail", async (req, res) => {
           res.status(500).send('bruger godkendt, fejl på mail');
           return console.log(error);
         } else {
-          console.log("Message sent: " + info.response);
+          //console.log("Message sent: " + info.response);
           res.status(200).json({ "info": "Bruger godkendt, du modtager om få minutter en mail med login" });
         }
 

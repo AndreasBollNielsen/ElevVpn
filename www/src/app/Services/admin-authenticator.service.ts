@@ -12,7 +12,7 @@ export class AdminAuthenticatorService {
 
   adminuser: any[] = [];
   authenticated: boolean = false;
-  hasBeenLoggedIn: boolean =false;
+  hasBeenLoggedIn: boolean = false;
   checkedLogin: boolean = false;
   public loginSubject$: Subject<boolean> = new Subject<boolean>();
   public ForcedLogout$: Subject<string> = new Subject<string>();
@@ -30,7 +30,7 @@ export class AdminAuthenticatorService {
 
     this.api.CheckAdminLogin(userData).subscribe(data => {
       console.log("login: ", data);
-     // next: this.adminuser = data;
+      // next: this.adminuser = data;
       let login: boolean = false;
       if (JSON.stringify(data) !== '{}') {
         console.log("authenticated");
@@ -64,12 +64,11 @@ export class AdminAuthenticatorService {
   }
 
   Logout(): Observable<boolean> {
-   
-    this.api.ClearCookie().subscribe((data)=>{
+
+    this.api.ClearCookie().subscribe((data) => {
       next:
       console.log("logging out: ", data);
     })
-    //this.removeCookie("admin");
     this.authenticated = false;
     this.hasBeenLoggedIn = true;
     this.loginSubject$.next(false);
@@ -77,25 +76,27 @@ export class AdminAuthenticatorService {
   }
 
   ForceLogout() {
-    console.log("forced logout");
-    this.authenticated = false;
-    this.loginSubject$.next(false);
-    this.ForcedLogout$.next("Session udløbet...");
-    this.route.navigateByUrl("admin-login");
+    console.log("forced logout: ", this.authenticated);
+    if (this.authenticated) {
+
+      this.authenticated = false;
+      this.loginSubject$.next(false);
+      this.ForcedLogout$.next("Session udløbet...");
+      this.route.navigate(["admin-login"]);
+    }
     return this.loginSubject$.asObservable();
   }
 
   IsLoggedIn() {
 
-    if(!this.hasBeenLoggedIn)
-    {
+    if (!this.hasBeenLoggedIn) {
       return this.GetExpiration();
     }
     return false;
-    
+
   }
 
-  
+
   GetExpiration() {
     let verification = false;
     this.api.VerifyExpiration().subscribe((data: any) => {
