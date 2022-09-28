@@ -37,6 +37,7 @@ export class AdminAuthenticatorService {
         this.authenticated = true;
         // this.setSession(data);
         login = this.authenticated;
+        this.hasBeenLoggedIn = false;
 
       }
       this.loginSubject$.next(login);
@@ -90,8 +91,10 @@ export class AdminAuthenticatorService {
   IsLoggedIn() {
 
     if (!this.hasBeenLoggedIn) {
+      console.log('checking expiration');
       return this.GetExpiration();
     }
+    console.log('not loggedin');
     return false;
 
   }

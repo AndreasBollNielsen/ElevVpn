@@ -5,7 +5,7 @@ const db = require('../DB/DBManager');
 const radius = require('../DB/RadiusDB');
 const query = require('querystring');
 const security = require('../Auth/SecurityManager');
-
+const corsConfig = require('../Origins_Config.json');
 
 
 const loginAttempts = [];
@@ -207,7 +207,7 @@ router.delete('/RemoveUser', security.VerifyToken, async (req, res) => {
 // verify token expiration date
 router.get('/admin/VerifyExpiration', security.VerifyToken, (req, res) => {
 
-    res.set('Access-Control-Allow-Origin', 'https://localhost:4200');
+    res.set('Access-Control-Allow-Origin', corsConfig.allowedOrigin);
     const token = req.signedCookies['token'];
     const result = security.VerifyExpiration(token);
 
@@ -220,7 +220,7 @@ router.get('/admin/VerifyExpiration', security.VerifyToken, (req, res) => {
 router.get('/admin/', async (req, res) => {
 
     // cors allowed ip address
-    res.set('Access-Control-Allow-Origin', 'https://localhost:4200');
+    res.set('Access-Control-Allow-Origin', corsConfig.allowedOrigin);
 
     const data = req.query;
     console.log("login attempts: ", loginAttempts);
