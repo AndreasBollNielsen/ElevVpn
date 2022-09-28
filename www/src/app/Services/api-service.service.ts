@@ -11,7 +11,7 @@ import config from '../../assets/Config.json';
 
 export class ApiServiceService {
  
-  host = config.local;
+  host = config.ip;
   
 
   constructor(private http: HttpClient) {
