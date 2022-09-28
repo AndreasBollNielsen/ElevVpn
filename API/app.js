@@ -13,7 +13,7 @@ const port = 3600;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieparser());
+app.use(cookieparser('secretkey'));
 //app.use(cors());
 app.use(cors({
   origin: ['https://localhost:4200','http://localhost:4200','https://elevvpn.zbc.dk','https://localhost','http://172.18.150.51','https://172.18.150.51'],
@@ -21,7 +21,7 @@ app.use(cors({
   credentials: true
 }));
 
-
+app.set('trust proxy','127.0.0.1');
 
 app.use('/api', apiRouter);
 app.use('/api/email', apiEmail);
@@ -30,9 +30,6 @@ app.use('/api/info', apiInfo);
 
 app.use("/", express.static("public"));
 
-app.get('/hello', (req, res) => {
-  res.send("hello world");
-})
 
 //-----------------------SSl not in use-------------------------------------------
 // const ssloptions = {
@@ -45,8 +42,8 @@ app.get('/hello', (req, res) => {
 //   Key: fs.readFileSync('/etc/pki/tls/certs/172.18.150.51.key',"utf-8")
 // }
 // console.log(ssloptions.cert);
-// const sslServere = https.createServer(options, app);
+ const sslServere = https.createServer({}, app);
 
 //output port listener
-app.listen(port, () => { console.log(`port is listening ${port}`) });
+sslServere.listen(port, () => { console.log(`port is listening ${port}`) });
 

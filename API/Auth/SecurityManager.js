@@ -15,7 +15,7 @@ const salt = 10;
 const key = require('crypto').randomBytes(64).toString('hex');
 
 
-// process.env.TOKEN_PRIVATE_KEY = key;
+
 
 
 encryption.Encrypt = async (password) => {
@@ -81,8 +81,9 @@ encryption.GenerateToken = (userName) => {
 
 encryption.VerifyToken = (req, res, next) => {
 
-    const token = req.cookies.token || '';
-   // console.log("token_security: ", req);
+  //  const token = req.cookies.token || '';
+    const token =req.signedCookies['token'];
+    console.log("token_security: ", token);
 
 
     try {

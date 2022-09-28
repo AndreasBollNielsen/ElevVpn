@@ -207,8 +207,8 @@ router.delete('/RemoveUser', security.VerifyToken, async (req, res) => {
 // verify token expiration date
 router.get('/admin/VerifyExpiration', security.VerifyToken, (req, res) => {
 
-    res.set('Access-Control-Allow-Origin', 'http://localhost:4200');
-    const token = req.cookies.token || '';
+    res.set('Access-Control-Allow-Origin', 'https://localhost:4200');
+    const token = req.signedCookies['token'];
     const result = security.VerifyExpiration(token);
 
     res.json({ "verified": result });
@@ -220,7 +220,7 @@ router.get('/admin/VerifyExpiration', security.VerifyToken, (req, res) => {
 router.get('/admin/', async (req, res) => {
 
     // cors allowed ip address
-    res.set('Access-Control-Allow-Origin', 'http://localhost:4200');
+    res.set('Access-Control-Allow-Origin', 'https://localhost:4200');
 
     const data = req.query;
     console.log("login attempts: ", loginAttempts);
@@ -252,7 +252,8 @@ router.get('/admin/', async (req, res) => {
                 expires: new Date(Date.now() + (process.env.EXPIRE_TIME * 1000)),
                 secure: true,
                 httpOnly: true,
-                sameSite: 'none'
+                sameSite: 'none',
+                signed:true
             });
 
         res.status(200).send({ "token": token });
@@ -367,7 +368,7 @@ router.post('/admin/LogOut', security.VerifyToken, (req, res) => {
 
     const token = req.cookies || '';
     console.log("clearing token: ", token);
-    res.cookie('token', { maxAge: -1 });
+    res.clearCookie('token',{path: '/'});
     res.end();
 })
 

@@ -14,27 +14,25 @@ export class AuthInterceptorService implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    if(!this.auth.authenticated)
-    {
-     // return next.handle(req);
+    if (!this.auth.authenticated) {
+      // return next.handle(req);
     }
-    
+
     const clonedHTTPRequest = req.clone({ withCredentials: true });
-  
-      return next.handle(clonedHTTPRequest).pipe(catchError(error => {
+    console.log("intercepter ", clonedHTTPRequest);
+    return next.handle(clonedHTTPRequest).pipe(catchError(error => {
 
-        console.log("interceptor error: ",error.error);
-        
-        //force logout if status 401
-        if(error.status === 401)
-        {
-          this.auth.ForceLogout();
+      console.log("interceptor error: ", error.error);
 
-        }
-       
-        //return error
-        return throwError(error);
-      }));
+      //force logout if status 401
+      if (error.status === 401) {
+        this.auth.ForceLogout();
+
+      }
+
+      //return error
+      return throwError(error);
+    }));
 
   }
 }
