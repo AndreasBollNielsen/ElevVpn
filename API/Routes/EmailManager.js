@@ -12,8 +12,8 @@ const security = require('../Auth/SecurityManager');
 
 
 const transporter = mailer.createTransport(smtp({
-  host: 'mail.kpdesign.dk',
-  port: 465,
+  host: config.KpDesign.host,
+  port: config.KpDesign.port,
   auth: {
     user: config.KpDesign.user,
     pass: config.KpDesign.pass
