@@ -59,6 +59,11 @@ export class DataHandlerService {
     }
   }
 
+  UpdateSticky(user:User)
+  {
+    this.crud.UpdateSticky(user);
+  }
+
   DeleteAllUsers(users: User[])
   {
     for (let index = 0; index < users.length; index++) {

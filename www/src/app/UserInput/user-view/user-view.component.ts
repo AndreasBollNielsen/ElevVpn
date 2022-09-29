@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ApiServiceService } from 'src/app/Services/api-service.service';
 import { EmailHandlerService } from 'src/app/Services/email-handler.service';
 
 @Component({
@@ -12,7 +11,7 @@ export class UserViewComponent implements OnInit {
   
   mailResponse:string ="";
   
-  constructor(private api: ApiServiceService, private formbuilder: FormBuilder, private mailHandler:EmailHandlerService) {
+  constructor(private formbuilder: FormBuilder, private mailHandler:EmailHandlerService) {
    
   }
 
