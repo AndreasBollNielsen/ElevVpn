@@ -1,4 +1,4 @@
 {
-    "origins": ["https://localhost:4200","http://localhost:4200","https://elevvpn.zbc.dk","https://localhost","http://172.18.150.51","https://172.18.150.51"],
+    "origins": ["https://localhost:4200","http://localhost:4200","https://elevvpn.zbc.dk","https://localhost","http://172.18.150.51"],
     "allowedOrigin": "http://localhost:4200"
 }
