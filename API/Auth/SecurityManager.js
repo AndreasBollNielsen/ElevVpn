@@ -10,7 +10,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 encryption = {};
-const salt = 10;
+const salt = process.env.salt;
 
 const key = require('crypto').randomBytes(64).toString('hex');
 
