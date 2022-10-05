@@ -4,3 +4,4 @@ Documentation/mail info.txt
 API/DBConfig.json
 API/.env
 API/Origins_Config.json
+www/src/assets/Config.json
