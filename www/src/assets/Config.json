@@ -3,7 +3,7 @@
     "local": "https://localhost:3600/api/",
     "localip": "https://127.0.0.1:3600/api/",
     "certpaths":{
-        "key": "",
-        "cert": ""
+        "key": "h",
+        "cert": "h"
     }
 }
