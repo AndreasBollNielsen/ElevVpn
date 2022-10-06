@@ -22,7 +22,13 @@ export class AuthInterceptorService implements HttpInterceptor {
     console.log("intercepter ", clonedHTTPRequest);
     return next.handle(clonedHTTPRequest).pipe(catchError(error => {
 
-      console.log("interceptor error: ", error.error);
+     // console.log("interceptor error: ", error.error);
+      
+     // no connection to server
+      if(error.status === 0)
+      {
+        error.error = "ingen forbindelse til serveren";
+      }
 
       //force logout if status 401
       if (error.status === 401) {

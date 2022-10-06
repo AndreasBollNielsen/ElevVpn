@@ -37,13 +37,13 @@ app.use("/", express.static("public"));
 //   Key: fs.readFileSync('/etc/pki/tls/certs/key.pem',"utf-8")
 // }
 
-// const ssloptions = {
-//   cert: fs.readFileSync('/etc/pki/tls/certs/172.18.150.51.crt',"utf-8"),
-//   Key: fs.readFileSync('/etc/pki/tls/certs/172.18.150.51.key',"utf-8")
-// }
+const ssloptions = {
+  cert: fs.readFileSync('/etc/pki/tls/certs/172.18.150.51.crt',"utf-8"),
+  Key: fs.readFileSync('/etc/pki/tls/certs/172.18.150.51.key',"utf-8")
+}
 // console.log(ssloptions.cert);
- const sslServere = https.createServer({}, app);
+ const sslServere = https.createServer(ssloptions, app);
 
 //output port listener
-app.listen(port, () => { console.log(`port is listening ${port}`) });
+sslServere.listen(port, () => { console.log(`port is listening ${port}`) });
 

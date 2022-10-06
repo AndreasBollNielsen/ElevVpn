@@ -22,7 +22,7 @@ export class EmailHandlerService {
       this.response$.next(response.info);
     },
       error => {
-        
+      // console.log("callback error message: ",error.error);
         this.response$.next(error.error);
       }
     )
