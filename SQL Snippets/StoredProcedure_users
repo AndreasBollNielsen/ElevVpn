@@ -1,3 +1,4 @@
+use elevvpn;
 DROP PROCEDURE IF EXISTS AddUser;
 DELIMITER //  
 CREATE PROCEDURE AddUser (
@@ -7,7 +8,6 @@ BEGIN
     INSERT into users (email, hasVpn, isSticky)
 VALUES (_email,false,false); 
 END // 
-
 
 
 DROP PROCEDURE IF EXISTS UpdateSticky;
@@ -44,7 +44,7 @@ BEGIN
 END //
 
 
-DROP PROCEDURE IF EXISTS delupeteUser;
+DROP PROCEDURE IF EXISTS deleteUser;
 DELIMITER //  
 CREATE PROCEDURE deleteUser (
     IN _id INT

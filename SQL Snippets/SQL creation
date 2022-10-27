@@ -1,11 +1,15 @@
-CREATE DATABASE elev2;
-
+CREATE DATABASE elevvpn;
+use elevvpn;
 CREATE TABLE adminuser(
     id INT AUTO_INCREMENT,
     userName VARCHAR(100),
     passWord VARCHAR(100),
     PRIMARY KEY (id)
 );
+
+use elevvpn;
+INSERT INTO adminuser (userName,passWord)
+values('admin','admin');
 
 CREATE TABLE mailInfo(
     id INT AUTO_INCREMENT,
@@ -21,6 +25,3 @@ CREATE TABLE users(
     isSticky BIT(1),
     PRIMARY KEY (id)
 );
-
-INSERT INTO adminuser(userName,passWord)
-VALUES('cfmn','Bob$piser1MisseKat');

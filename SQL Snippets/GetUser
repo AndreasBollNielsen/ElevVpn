@@ -5,3 +5,4 @@ CREATE PROCEDURE GetUsers (
 BEGIN  
     SELECT * FROM users;
 END // 
+
